@@ -24,9 +24,9 @@ namespace ExpenseTracker.Models
 
         [Required(ErrorMessage = "Date is required")]
         [DataType(DataType.Date)]
-        public DateTime Date { get; set; } = DateTime.Now;
+        public DateTime Date { get; set; } = DateTime.UtcNow;
 
         [DataType(DataType.DateTime)]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

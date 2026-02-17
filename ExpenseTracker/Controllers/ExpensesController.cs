@@ -44,7 +44,7 @@ namespace ExpenseTracker.Controllers
         // GET: Expenses/Create
         public IActionResult Create()
         {
-            var expense = new Expense { Date = DateTime.Now };
+            var expense = new Expense { Date = DateTime.UtcNow };
             return View(expense);
         }
 
@@ -55,6 +55,12 @@ namespace ExpenseTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Ensure Date is in UTC
+                if (expense.Date.Kind == DateTimeKind.Unspecified)
+                {
+                    expense.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
+                }
+                
                 await _expenseService.CreateExpenseAsync(expense);
                 TempData["SuccessMessage"] = "Expense created successfully!";
                 return RedirectToAction(nameof(Index));
@@ -92,6 +98,16 @@ namespace ExpenseTracker.Controllers
             {
                 try
                 {
+                    // Ensure Date and CreatedAt are in UTC
+                    if (expense.Date.Kind == DateTimeKind.Unspecified)
+                    {
+                        expense.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
+                    }
+                    if (expense.CreatedAt.Kind == DateTimeKind.Unspecified)
+                    {
+                        expense.CreatedAt = DateTime.SpecifyKind(expense.CreatedAt, DateTimeKind.Utc);
+                    }
+                    
                     await _expenseService.UpdateExpenseAsync(expense);
                     TempData["SuccessMessage"] = "Expense updated successfully!";
                 }

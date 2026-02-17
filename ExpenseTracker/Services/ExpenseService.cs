@@ -33,12 +33,18 @@ namespace ExpenseTracker.Services
             // Apply filters
             if (filter.FromDate.HasValue)
             {
-                query = query.Where(e => e.Date >= filter.FromDate.Value);
+                var fromDate = filter.FromDate.Value.Kind == DateTimeKind.Unspecified 
+                    ? DateTime.SpecifyKind(filter.FromDate.Value, DateTimeKind.Utc) 
+                    : filter.FromDate.Value;
+                query = query.Where(e => e.Date >= fromDate);
             }
 
             if (filter.ToDate.HasValue)
             {
-                query = query.Where(e => e.Date <= filter.ToDate.Value);
+                var toDate = filter.ToDate.Value.Kind == DateTimeKind.Unspecified 
+                    ? DateTime.SpecifyKind(filter.ToDate.Value, DateTimeKind.Utc) 
+                    : filter.ToDate.Value;
+                query = query.Where(e => e.Date <= toDate);
             }
 
             if (filter.Category.HasValue)
@@ -70,7 +76,7 @@ namespace ExpenseTracker.Services
 
         public async Task<Expense> CreateExpenseAsync(Expense expense)
         {
-            expense.CreatedAt = DateTime.Now;
+            expense.CreatedAt = DateTime.UtcNow;
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
             return expense;
