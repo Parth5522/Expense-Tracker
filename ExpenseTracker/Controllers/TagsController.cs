@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class TagsController : Controller
 {
     private readonly ITagService _tagService;

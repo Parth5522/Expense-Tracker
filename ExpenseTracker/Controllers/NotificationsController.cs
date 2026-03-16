@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class NotificationsController : Controller
 {
     private readonly INotificationService _notificationService;
