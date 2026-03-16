@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class RecurringController : Controller
 {
     private readonly IRecurringTransactionService _recurringService;
