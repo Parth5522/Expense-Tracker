@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "User Management";
+    var usersWithRoles = ViewBag.UsersWithRoles as List<(ExpenseTracker.Models.ApplicationUser User, IList<string> Roles)>;
+}
+
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold"><i class="fas fa-users-cog me-2"></i>User Management</h1>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Admin
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-users me-2"></i>All Users
+            <span class="badge bg-primary ms-1">@(usersWithRoles?.Count ?? 0) users</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Display Name</th>
+                            <th>Registered</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (usersWithRoles != null)
+                        {
+                            @foreach (var item in usersWithRoles)
+                            {
+                                <tr>
+                                    <td>@item.User.Email</td>
+                                    <td>@item.User.DisplayName</td>
+                                    <td>@item.User.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        @foreach (var role in item.Roles)
+                                        {
+                                            <span class="badge @(role == "Admin" ? "bg-danger" : "bg-secondary") me-1">@role</span>
+                                        }
+                                        @if (!item.Roles.Any())
+                                        {
+                                            <span class="badge bg-light text-dark">User</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <form asp-controller="Admin" asp-action="ToggleAdmin" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@item.User.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-warning" title="Toggle Admin">
+                                                    <i class="fas fa-user-shield me-1"></i>Toggle Admin
+                                                </button>
+                                            </form>
+                                            <form asp-controller="Admin" asp-action="DeleteUser" method="post" class="d-inline ms-1"
+                                                  onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@item.User.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete User">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

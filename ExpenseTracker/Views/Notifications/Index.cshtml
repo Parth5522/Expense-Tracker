@@ -1,0 +1,66 @@
+@model IEnumerable<ExpenseTracker.Models.Notification>
+@{
+    ViewData["Title"] = "Notifications";
+    var unread = Model.Count(n => !n.IsRead);
+}
+
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold"><i class="fas fa-bell me-2 text-warning"></i>Notifications
+            @if (unread > 0)
+            {
+                <span class="badge bg-danger ms-2">@unread</span>
+            }
+        </h1>
+        @if (Model.Any(n => !n.IsRead))
+        {
+            <form asp-action="MarkAllAsRead" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="fas fa-check-double me-1"></i>Mark All as Read</button>
+            </form>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No notifications</h5>
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var n in Model)
+            {
+                var iconClass = n.Type switch {
+                    ExpenseTracker.Models.NotificationType.BudgetExceeded => "fas fa-exclamation-triangle text-warning",
+                    ExpenseTracker.Models.NotificationType.GoalAchieved => "fas fa-star text-success",
+                    ExpenseTracker.Models.NotificationType.RecurringTransactionCreated => "fas fa-clock text-info",
+                    ExpenseTracker.Models.NotificationType.UpcomingBill => "fas fa-calendar-alt text-danger",
+                    _ => "fas fa-info-circle text-secondary"
+                };
+                <div class="list-group-item list-group-item-action @(n.IsRead ? "opacity-60" : "fw-semibold")">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="@iconClass fa-lg"></i>
+                        <div class="flex-grow-1">
+                            <div>@n.Message</div>
+                            <small class="text-muted">@n.CreatedAt.ToString("MMM dd, yyyy HH:mm") &bull; @n.Type</small>
+                        </div>
+                        @if (!n.IsRead)
+                        {
+                            <form asp-action="MarkAsRead" asp-route-id="@n.Id" method="post" class="ms-auto">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Mark Read</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary ms-auto">Read</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
