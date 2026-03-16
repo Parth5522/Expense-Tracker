@@ -1,6 +1,7 @@
 using ExpenseTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ExpenseTracker.Data;
 
@@ -11,6 +12,7 @@ public static class SeedData
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
         // Ensure database is created and migrations applied
         await context.Database.MigrateAsync();
@@ -23,8 +25,9 @@ public static class SeedData
                 await roleManager.CreateAsync(new IdentityRole(role));
         }
 
-        // Seed admin user
-        const string adminEmail = "admin@expensetracker.com";
+        // Seed admin user — credentials are read from configuration (SeedCredentials section)
+        var adminEmail = configuration["SeedCredentials:AdminEmail"] ?? "admin@expensetracker.com";
+        var adminPassword = configuration["SeedCredentials:AdminPassword"] ?? "Admin@123";
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
             var admin = new ApplicationUser
@@ -36,7 +39,7 @@ public static class SeedData
                 EmailConfirmed = true,
                 CreatedAt = DateTime.UtcNow
             };
-            var result = await userManager.CreateAsync(admin, "Admin@123");
+            var result = await userManager.CreateAsync(admin, adminPassword);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, "Admin");
@@ -44,8 +47,9 @@ public static class SeedData
             }
         }
 
-        // Seed demo user
-        const string demoEmail = "demo@expensetracker.com";
+        // Seed demo user — credentials are read from configuration (SeedCredentials section)
+        var demoEmail = configuration["SeedCredentials:DemoEmail"] ?? "demo@expensetracker.com";
+        var demoPassword = configuration["SeedCredentials:DemoPassword"] ?? "Demo@123";
         if (await userManager.FindByEmailAsync(demoEmail) == null)
         {
             var demo = new ApplicationUser
@@ -57,7 +61,7 @@ public static class SeedData
                 EmailConfirmed = true,
                 CreatedAt = DateTime.UtcNow
             };
-            var result = await userManager.CreateAsync(demo, "Demo@123");
+            var result = await userManager.CreateAsync(demo, demoPassword);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(demo, "User");

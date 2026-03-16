@@ -113,6 +113,32 @@ The application will start and be available at:
 
 Open your browser and navigate to one of these URLs to start using the Expense Tracker!
 
+### 6. Default Accounts
+
+When running in development mode, the following seed accounts are created automatically:
+
+| Role  | Email                       | Password   |
+|-------|-----------------------------|------------|
+| Admin | admin@expensetracker.com    | Admin@123  |
+| Demo  | demo@expensetracker.com     | Demo@123   |
+
+The **Admin** account has full access to the admin panel (`/Admin`), where you can manage users, roles, and currencies.
+
+You can override these defaults by adding a `SeedCredentials` section to `appsettings.Development.json` **before** running the application for the first time:
+
+```json
+{
+  "SeedCredentials": {
+    "AdminEmail": "your-admin@example.com",
+    "AdminPassword": "Y0ur$tr0ng@Passw0rd!",
+    "DemoEmail": "your-demo@example.com",
+    "DemoPassword": "Y0urD3m0@Passw0rd!"
+  }
+}
+```
+
+> **Note:** Seed accounts are only created once (on first startup). Changing `SeedCredentials` after the accounts already exist in the database has no effect.
+
 ## Project Structure
 
 ```
