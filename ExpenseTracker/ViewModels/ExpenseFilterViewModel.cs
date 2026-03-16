@@ -15,6 +15,8 @@ namespace ExpenseTracker.ViewModels
 
         public string? SearchTerm { get; set; }
 
+        public string? UserId { get; set; }
+
         public List<Expense> Expenses { get; set; } = new();
 
         public int PageNumber { get; set; } = 1;

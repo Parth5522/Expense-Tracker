@@ -40,4 +40,7 @@ public class IncomeService : IIncomeService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<decimal> GetTotalIncomeAsync(string userId) =>
+        await _context.Incomes.Where(i => i.UserId == userId).SumAsync(i => i.AmountInBaseCurrency);
 }
