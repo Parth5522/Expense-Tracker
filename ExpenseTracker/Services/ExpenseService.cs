@@ -7,9 +7,9 @@ namespace ExpenseTracker.Services
 {
     public class ExpenseService : IExpenseService
     {
-        private readonly ExpenseDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ExpenseService(ExpenseDbContext context)
+        public ExpenseService(ApplicationDbContext context)
         {
             _context = context;
         }
