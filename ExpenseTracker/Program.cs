@@ -28,7 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddClaimsPrincipalFactory<CustomUserClaimsPrincipalFactory>();
 
 // Configure cookie authentication
 builder.Services.ConfigureApplicationCookie(options =>
