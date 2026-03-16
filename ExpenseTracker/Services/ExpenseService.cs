@@ -7,9 +7,9 @@ namespace ExpenseTracker.Services
 {
     public class ExpenseService : IExpenseService
     {
-        private readonly ExpenseDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ExpenseService(ExpenseDbContext context)
+        public ExpenseService(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -23,12 +23,15 @@ namespace ExpenseTracker.Services
 
         public async Task<Expense?> GetExpenseByIdAsync(int id)
         {
-            return await _context.Expenses.FindAsync(id);
+            return await _context.Expenses.Include(e => e.ExpenseTags).FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<ExpenseFilterViewModel> GetFilteredExpensesAsync(ExpenseFilterViewModel filter)
         {
-            var query = _context.Expenses.AsQueryable();
+            var query = _context.Expenses.Include(e => e.ExpenseTags).AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.UserId))
+                query = query.Where(e => e.UserId == filter.UserId);
 
             // Apply filters
             if (filter.FromDate.HasValue)
@@ -104,7 +107,16 @@ namespace ExpenseTracker.Services
 
         public async Task<DashboardViewModel> GetDashboardDataAsync()
         {
-            var allExpenses = await _context.Expenses.ToListAsync();
+            return await GetDashboardDataAsync(string.Empty);
+        }
+
+        public async Task<DashboardViewModel> GetDashboardDataAsync(string userId)
+        {
+            var query = _context.Expenses.AsQueryable();
+            if (!string.IsNullOrEmpty(userId))
+                query = query.Where(e => e.UserId == userId);
+
+            var allExpenses = await query.ToListAsync();
             var currentMonth = DateTime.Now.Month;
             var currentYear = DateTime.Now.Year;
 
@@ -135,6 +147,23 @@ namespace ExpenseTracker.Services
             };
 
             return dashboard;
+        }
+
+        public async Task<decimal> GetSpentAmountAsync(string userId, int month, int year, ExpenseCategory? category)
+        {
+            var query = _context.Expenses.Where(e => e.UserId == userId && e.Date.Month == month && e.Date.Year == year);
+            if (category.HasValue)
+                query = query.Where(e => e.Category == category.Value);
+            return await query.SumAsync(e => e.AmountInBaseCurrency);
+        }
+
+        public async Task SetTagsAsync(int expenseId, int[] tagIds)
+        {
+            var existing = await _context.ExpenseTags.Where(et => et.ExpenseId == expenseId).ToListAsync();
+            _context.ExpenseTags.RemoveRange(existing);
+            foreach (var tagId in tagIds)
+                _context.ExpenseTags.Add(new ExpenseTag { ExpenseId = expenseId, TagId = tagId });
+            await _context.SaveChangesAsync();
         }
     }
 }

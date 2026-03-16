@@ -1,0 +1,101 @@
+@model ExpenseTracker.Models.RecurringTransaction
+@{
+    ViewData["Title"] = "Create Recurring Transaction";
+}
+
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold"><i class="fas fa-plus-circle me-2 text-primary"></i>Create Recurring Transaction</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back</a>
+    </div>
+    <div class="card" style="max-width:650px">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none"></div>
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold"></label>
+                    <input asp-for="Title" class="form-control" placeholder="e.g. Monthly Rent" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Amount" class="form-label fw-semibold"></label>
+                        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01" />
+                        <span asp-validation-for="Amount" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Currency" class="form-label fw-semibold"></label>
+                        <select asp-for="Currency" class="form-select">
+                            <option value="USD">USD</option><option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option><option value="INR">INR</option>
+                            <option value="JPY">JPY</option><option value="CAD">CAD</option>
+                            <option value="AUD">AUD</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Type" class="form-label fw-semibold"></label>
+                        <select asp-for="Type" asp-items="Html.GetEnumSelectList<ExpenseTracker.Models.RecurringTransactionType>()" class="form-select"></select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Frequency" class="form-label fw-semibold"></label>
+                        <select asp-for="Frequency" asp-items="Html.GetEnumSelectList<ExpenseTracker.Models.RecurrenceFrequency>()" class="form-select"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ExpenseCategory" class="form-label fw-semibold">Expense Category</label>
+                        <select asp-for="ExpenseCategory" class="form-select">
+                            <option value="">-- None --</option>
+                            @foreach (var c in Html.GetEnumSelectList<ExpenseTracker.Models.ExpenseCategory>())
+                            {
+                                <option value="@c.Value">@c.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="IncomeSource" class="form-label fw-semibold">Income Source</label>
+                        <select asp-for="IncomeSource" class="form-select">
+                            <option value="">-- None --</option>
+                            @foreach (var s in Html.GetEnumSelectList<ExpenseTracker.Models.IncomeSource>())
+                            {
+                                <option value="@s.Value">@s.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                        <small class="text-muted">Optional</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="NextRunAt" class="form-label fw-semibold"></label>
+                    <input asp-for="NextRunAt" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="NextRunAt" class="text-danger small"></span>
+                </div>
+                <div class="mb-3 form-check">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsActive" class="form-check-label">Active</label>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

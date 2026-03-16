@@ -1,0 +1,47 @@
+@model IEnumerable<ExpenseTracker.Models.Currency>
+@{
+    ViewData["Title"] = "Currency Management";
+}
+
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold"><i class="fas fa-coins me-2"></i>Currency Management</h1>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Admin
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-coins me-2"></i>Supported Currencies
+            <span class="badge bg-primary ms-1">@Model.Count() currencies</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Symbol</th>
+                            <th class="text-end">Rate to USD</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var currency in Model)
+                        {
+                            <tr>
+                                <td><span class="badge bg-primary">@currency.Code</span></td>
+                                <td>@currency.Name</td>
+                                <td><strong>@currency.Symbol</strong></td>
+                                <td class="text-end">@currency.RateToUsd.ToString("N4")</td>
+                                <td>@currency.UpdatedAt.ToString("MMM dd, yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseTracker.Models;
 
-public class Expense
+public enum IncomeSource
+{
+    Salary,
+    Freelance,
+    Investment,
+    Rental,
+    Business,
+    Gift,
+    Bonus,
+    Other
+}
+
+public class Income
 {
     public int Id { get; set; }
 
@@ -20,7 +32,7 @@ public class Expense
     public decimal Amount { get; set; }
 
     [Required]
-    public ExpenseCategory Category { get; set; }
+    public IncomeSource Source { get; set; }
 
     [Required]
     public DateTime Date { get; set; } = DateTime.UtcNow;
@@ -28,7 +40,6 @@ public class Expense
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 
-    // Currency
     [StringLength(3)]
     public string Currency { get; set; } = "USD";
 
@@ -38,11 +49,8 @@ public class Expense
     [Column(TypeName = "decimal(18,2)")]
     public decimal AmountInBaseCurrency { get; set; }
 
-    // User ownership
     public string? UserId { get; set; }
     public ApplicationUser? User { get; set; }
 
-    // Navigation
-    public ICollection<ExpenseTag> ExpenseTags { get; set; } = new List<ExpenseTag>();
-    public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+    public ICollection<IncomeTag> IncomeTags { get; set; } = new List<IncomeTag>();
 }

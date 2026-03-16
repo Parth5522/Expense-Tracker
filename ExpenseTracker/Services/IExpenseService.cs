@@ -12,5 +12,8 @@ namespace ExpenseTracker.Services
         Task<Expense> UpdateExpenseAsync(Expense expense);
         Task<bool> DeleteExpenseAsync(int id);
         Task<DashboardViewModel> GetDashboardDataAsync();
+        Task<DashboardViewModel> GetDashboardDataAsync(string userId);
+        Task<decimal> GetSpentAmountAsync(string userId, int month, int year, ExpenseCategory? category);
+        Task SetTagsAsync(int expenseId, int[] tagIds);
     }
 }
