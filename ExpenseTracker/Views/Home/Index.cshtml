@@ -1,6 +1,7 @@
 @model ExpenseTracker.ViewModels.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    var currencySymbol = User.FindFirst("CurrencySymbol")?.Value ?? "$";
 }
 
 <div class="fade-in">
@@ -19,7 +20,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Expenses</div>
-                        <div class="stat-value">$@Model.TotalExpenses.ToString("N2")</div>
+                        <div class="stat-value">@currencySymbol@Model.TotalExpenses.ToString("N2")</div>
                     </div>
                     <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
                 </div>
@@ -30,7 +31,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">This Month</div>
-                        <div class="stat-value">$@Model.MonthlyExpenses.ToString("N2")</div>
+                        <div class="stat-value">@currencySymbol@Model.MonthlyExpenses.ToString("N2")</div>
                     </div>
                     <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
                 </div>
@@ -41,7 +42,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Avg. Expense</div>
-                        <div class="stat-value">$@Model.AverageExpense.ToString("N2")</div>
+                        <div class="stat-value">@currencySymbol@Model.AverageExpense.ToString("N2")</div>
                     </div>
                     <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
                 </div>
@@ -128,7 +129,7 @@
                                         </span>
                                     </td>
                                     <td data-label="Amount" class="text-end">
-                                        <strong class="text-success">$@expense.Amount.ToString("N2")</strong>
+                                        <strong class="text-success">@currencySymbol@expense.Amount.ToString("N2")</strong>
                                     </td>
                                     <td class="td-actions text-end">
                                         <a asp-controller="Expenses" asp-action="Details" asp-route-id="@expense.Id" class="btn btn-sm btn-outline-info" title="Details">
@@ -161,6 +162,7 @@
 
 @section Scripts {
     <script>
+        var currencySymbol = '@Html.Raw(currencySymbol)';
         var categoryLabels = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Keys));
         var categoryData   = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Values));
 
@@ -188,7 +190,7 @@
                     tooltip: {
                         callbacks: {
                             label: function (c) {
-                                return (c.label || '') + ': $' + c.parsed.toFixed(2);
+                                return (c.label || '') + ': ' + currencySymbol + c.parsed.toFixed(2);
                             }
                         }
                     }
@@ -219,7 +221,7 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        callbacks: { label: function (c) { return '$' + c.parsed.y.toFixed(2); } }
+                        callbacks: { label: function (c) { return currencySymbol + c.parsed.y.toFixed(2); } }
                     }
                 },
                 scales: {
@@ -227,7 +229,7 @@
                     y: {
                         beginAtZero: true,
                         grid: { color: '#f1f5f9' },
-                        ticks: { callback: function (v) { return '$' + v; } }
+                        ticks: { callback: function (v) { return currencySymbol + v; } }
                     }
                 }
             }

@@ -1,6 +1,7 @@
 @model ExpenseTracker.Models.Expense
 @{
     ViewData["Title"] = "Edit Expense";
+    var currencySymbol = User.FindFirst("CurrencySymbol")?.Value ?? "$";
 }
 
 <div class="fade-in">
@@ -33,7 +34,7 @@
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Amount" class="form-label"></label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">@currencySymbol</span>
                                     <input asp-for="Amount" class="form-control" placeholder="0.00" />
                                 </div>
                                 <span asp-validation-for="Amount" class="text-danger"></span>

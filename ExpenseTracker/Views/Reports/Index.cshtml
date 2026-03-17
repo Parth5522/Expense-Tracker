@@ -1,0 +1,179 @@
+@model ExpenseTracker.ViewModels.ReportViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="fade-in">
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-chart-bar"></i>Reports</h1>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="filter-section mb-4">
+        <form method="get" asp-action="Index">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">From Date</label>
+                    <input type="date" name="from" class="form-control" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">To Date</label>
+                    <input type="date" name="to" class="form-control" value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Generate Report
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-redo me-2"></i>Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Total Expenses</div>
+                        <div class="stat-value text-danger">@Model.TotalExpenses.ToString("N2")</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card success">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Total Income</div>
+                        <div class="stat-value text-success">@Model.TotalIncome.ToString("N2")</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card @(Model.NetSavings >= 0 ? "info" : "warning")">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Net Savings</div>
+                        <div class="stat-value @(Model.NetSavings >= 0 ? "text-info" : "text-warning")">@Model.NetSavings.ToString("N2")</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-piggy-bank"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Buttons -->
+    <div class="d-flex gap-2 mb-4">
+        <a asp-action="ExportExpenses"
+           asp-route-from="@Model.FromDate.ToString("yyyy-MM-dd")"
+           asp-route-to="@Model.ToDate.ToString("yyyy-MM-dd")"
+           class="btn btn-outline-danger">
+            <i class="fas fa-file-csv me-2"></i>Export Expenses CSV
+        </a>
+        <a asp-action="ExportIncome"
+           asp-route-from="@Model.FromDate.ToString("yyyy-MM-dd")"
+           asp-route-to="@Model.ToDate.ToString("yyyy-MM-dd")"
+           class="btn btn-outline-success">
+            <i class="fas fa-file-csv me-2"></i>Export Income CSV
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Expenses by Category -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-tags me-2 text-danger"></i>Expenses by Category
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.ExpensesByCategory.Any())
+                    {
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ExpensesByCategory.OrderByDescending(x => x.Value))
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge category-@item.Key.ToLower()">@item.Key</span>
+                                        </td>
+                                        <td class="text-end fw-semibold text-danger">@item.Value.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td class="fw-bold">Total</td>
+                                    <td class="text-end fw-bold text-danger">@Model.TotalExpenses.ToString("N2")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="empty-state py-4">
+                            <i class="fas fa-inbox"></i>
+                            <p>No expense data for selected period</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Income by Source -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-hand-holding-usd me-2 text-success"></i>Income by Source
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.IncomeBySource.Any())
+                    {
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.IncomeBySource.OrderByDescending(x => x.Value))
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td class="text-end fw-semibold text-success">@item.Value.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td class="fw-bold">Total</td>
+                                    <td class="text-end fw-bold text-success">@Model.TotalIncome.ToString("N2")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="empty-state py-4">
+                            <i class="fas fa-inbox"></i>
+                            <p>No income data for selected period</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

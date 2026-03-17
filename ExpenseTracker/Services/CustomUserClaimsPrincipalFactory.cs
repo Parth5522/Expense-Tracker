@@ -22,6 +22,18 @@ public class CustomUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<Appli
         {
             identity.AddClaim(new Claim("DisplayName", user.DisplayName));
         }
+        identity.AddClaim(new Claim("BaseCurrency", user.BaseCurrency));
+        var symbol = user.BaseCurrency switch
+        {
+            "EUR" => "€",
+            "GBP" => "£",
+            "INR" => "₹",
+            "JPY" => "¥",
+            "CAD" => "CA$",
+            "AUD" => "A$",
+            _ => "$"
+        };
+        identity.AddClaim(new Claim("CurrencySymbol", symbol));
         return identity;
     }
 }

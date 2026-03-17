@@ -28,4 +28,14 @@ public class CurrencyService : ICurrencyService
         var amountInUsd = amount / from.RateToUsd;
         return amountInUsd * to.RateToUsd;
     }
+
+    public async Task<bool> UpdateRateAsync(string code, decimal rateToUsd)
+    {
+        var currency = await _context.Currencies.FindAsync(code);
+        if (currency == null) return false;
+        currency.RateToUsd = rateToUsd;
+        currency.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }
