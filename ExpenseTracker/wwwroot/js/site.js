@@ -1,63 +1,87 @@
 // Expense Tracker JavaScript
 
-// Auto-hide alerts after 5 seconds
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto dismiss alerts
-    const alerts = document.querySelectorAll('.alert-dismissible');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Auto-dismiss alerts after 5 seconds ──
+    document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
+        setTimeout(function () {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
         }, 5000);
     });
 
-    // Format date inputs to today's date by default
-    const dateInputs = document.querySelectorAll('input[type="date"]');
-    dateInputs.forEach(function(input) {
+    // ── Default date inputs to today ──
+    document.querySelectorAll('input[type="date"]').forEach(function (input) {
         if (!input.value) {
-            const today = new Date().toISOString().split('T')[0];
-            input.value = today;
+            input.value = new Date().toISOString().split('T')[0];
         }
     });
 
-    // Format amount inputs
-    const amountInputs = document.querySelectorAll('input[name="Amount"]');
-    amountInputs.forEach(function(input) {
-        input.addEventListener('blur', function() {
-            if (this.value) {
-                const value = parseFloat(this.value);
-                if (!isNaN(value)) {
-                    this.value = value.toFixed(2);
-                }
-            }
+    // ── Format amount inputs on blur ──
+    document.querySelectorAll('input[name="Amount"]').forEach(function (input) {
+        input.addEventListener('blur', function () {
+            var v = parseFloat(this.value);
+            if (!isNaN(v)) this.value = v.toFixed(2);
         });
     });
 
-    // Confirm delete action
-    const deleteButtons = document.querySelectorAll('a[href*="/Delete/"]');
-    deleteButtons.forEach(function(button) {
-        button.addEventListener('click', function(e) {
-            if (!confirm('Are you sure you want to delete this expense?')) {
-                e.preventDefault();
-            }
-        });
+    // ── Active sidebar link highlighting ──
+    var currentPath = window.location.pathname.toLowerCase();
+    document.querySelectorAll('.sidebar-nav .nav-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href) return;
+        var linkPath = href.toLowerCase().split('?')[0];
+        // exact match or starts-with match (for sub-pages)
+        if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+            link.classList.add('active');
+        } else if (linkPath === '/' && currentPath === '/') {
+            link.classList.add('active');
+        }
     });
+
+    // ── Sidebar toggle (mobile) ──
+    var toggleBtn    = document.getElementById('sidebarToggle');
+    var sidebar      = document.getElementById('sidebar');
+    var overlay      = document.getElementById('sidebarOverlay');
+
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('sidebar-open');
+            if (overlay) overlay.classList.toggle('active');
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', function () {
+            if (sidebar) sidebar.classList.remove('sidebar-open');
+            overlay.classList.remove('active');
+        });
+    }
+
+    // Close sidebar when a link is clicked on mobile
+    if (sidebar) {
+        sidebar.querySelectorAll('.nav-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth < 992) {
+                    sidebar.classList.remove('sidebar-open');
+                    if (overlay) overlay.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    // ── Bootstrap tooltips ──
+    if (typeof bootstrap !== 'undefined') {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+            new bootstrap.Tooltip(el);
+        });
+    }
 });
 
-// Show loading spinner for form submissions
+// Show loading state on form submit
 function showLoadingSpinner(formElement) {
-    const submitButton = formElement.querySelector('button[type="submit"]');
-    if (submitButton) {
-        const originalText = submitButton.innerHTML;
-        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
-        submitButton.disabled = true;
+    var btn = formElement.querySelector('button[type="submit"]');
+    if (btn) {
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+        btn.disabled = true;
     }
-}
-
-// Initialize tooltips if Bootstrap 5 is loaded
-if (typeof bootstrap !== 'undefined') {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
 }
