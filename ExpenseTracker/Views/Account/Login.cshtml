@@ -3,42 +3,40 @@
     ViewData["Title"] = "Sign In";
 }
 
-<div class="fade-in">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0"><i class="fas fa-wallet me-2"></i>Sign In to Expense Tracker</h3>
+<div class="auth-wrapper fade-in">
+    <div class="auth-card card">
+        <div class="auth-header">
+            <span class="auth-icon"><i class="fas fa-wallet"></i></span>
+            <h3 class="mb-1">Welcome Back</h3>
+            <p class="mb-0 opacity-75" style="font-size:.9rem;">Sign in to your Expense Tracker</p>
+        </div>
+        <div class="auth-body">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+            <form asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"><i class="fas fa-envelope me-1 text-muted"></i>Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="you@example.com" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
-                <div class="card-body p-4">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                    <form asp-action="Login" method="post">
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="Enter your email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Password" class="form-label"><i class="fas fa-lock me-1"></i>Password</label>
-                            <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
-                            <label asp-for="RememberMe" class="form-check-label">Remember me</label>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                            </button>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"><i class="fas fa-lock me-1 text-muted"></i>Password</label>
+                    <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
                 </div>
-                <div class="card-footer text-center py-3">
-                    <span class="text-muted">Don't have an account?</span>
-                    <a asp-controller="Account" asp-action="Register" class="ms-1 fw-bold">Create one</a>
+                <div class="mb-4 form-check">
+                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                    <label asp-for="RememberMe" class="form-check-label text-muted">Remember me</label>
                 </div>
-            </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="auth-footer">
+            <span class="text-muted">Don't have an account?</span>
+            <a asp-controller="Account" asp-action="Register" class="ms-1 fw-bold">Create one free</a>
         </div>
     </div>
 </div>
