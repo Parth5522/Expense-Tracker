@@ -1,0 +1,58 @@
+@model ExpenseTracker.Models.Tag
+@{
+    ViewData["Title"] = "Create Tag";
+}
+
+<div class="fade-in">
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-tag"></i>New Tag</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card">
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Tag name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Color" class="form-label">Colour</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input asp-for="Color" type="color" class="form-control form-control-color" style="width:60px;height:38px;" />
+                                <input asp-for="Color" type="text" class="form-control" id="colorText" placeholder="#6c757d" />
+                            </div>
+                            <span asp-validation-for="Color" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Tag
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Sync colour picker and text input
+        var colorPicker = document.querySelector('input[type="color"]');
+        var colorText = document.getElementById('colorText');
+        colorPicker.addEventListener('input', function () { colorText.value = this.value; });
+        colorText.addEventListener('input', function () { if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) colorPicker.value = this.value; });
+    </script>
+}

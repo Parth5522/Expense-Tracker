@@ -104,8 +104,18 @@ public class AccountController : Controller
         if (user == null) return NotFound();
         user.DisplayName = displayName;
         user.BaseCurrency = baseCurrency;
-        await _userManager.UpdateAsync(user);
-        TempData["Success"] = "Profile updated.";
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Profile updated successfully.";
+        }
+        else
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            return View(user);
+        }
         return RedirectToAction(nameof(Profile));
     }
 }

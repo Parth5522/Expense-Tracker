@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead>
                         <tr>
                             <th>Code</th>
@@ -26,6 +26,7 @@
                             <th>Symbol</th>
                             <th class="text-end">Rate to USD</th>
                             <th>Last Updated</th>
+                            <th>Update Rate</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,10 +38,34 @@
                                 <td><strong>@currency.Symbol</strong></td>
                                 <td class="text-end">@currency.RateToUsd.ToString("N4")</td>
                                 <td>@currency.UpdatedAt.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td>
+                                    @if (currency.Code != "USD")
+                                    {
+                                        <form asp-action="UpdateRate" method="post" class="d-flex gap-2 align-items-center">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="code" value="@currency.Code" />
+                                            <input type="number" name="rateToUsd" class="form-control form-control-sm"
+                                                   style="width:110px;" step="0.0001" min="0.0001"
+                                                   value="@currency.RateToUsd.ToString("0.0000")"
+                                                   required />
+                                            <button type="submit" class="btn btn-sm btn-primary" title="Update rate">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Base currency</span>
+                                    }
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
+            </div>
+            <div class="alert alert-info mt-3 mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                Exchange rates are expressed as units of currency per 1 USD. Update them to reflect current market prices.
             </div>
         </div>
     </div>

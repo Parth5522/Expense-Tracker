@@ -7,4 +7,5 @@ public interface ICurrencyService
     Task<List<Currency>> GetAllCurrenciesAsync();
     Task<Currency?> GetCurrencyAsync(string code);
     Task<decimal> ConvertAsync(decimal amount, string fromCurrency, string toCurrency);
+    Task<bool> UpdateRateAsync(string code, decimal rateToUsd);
 }
