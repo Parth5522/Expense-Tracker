@@ -163,7 +163,7 @@
 @section Scripts {
     <script>
         var currencySymbol = '@Html.Raw(currencySymbol)';
-        var categoryLabels = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Keys));
+        var categoryLabels = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Keys.Select(k => k.ToString())));
         var categoryData   = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Values));
 
         new Chart(document.getElementById('categoryChart').getContext('2d'), {
