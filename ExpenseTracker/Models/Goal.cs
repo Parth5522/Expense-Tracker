@@ -32,8 +32,7 @@ public class Goal
     [StringLength(3)]
     public string Currency { get; set; } = "USD";
 
-    [Required]
-    public string UserId { get; set; } = string.Empty;
+    public string? UserId { get; set; }
     public ApplicationUser? User { get; set; }
 
     public decimal ProgressPercentage => TargetAmount > 0 ? Math.Min(100, (CurrentAmount / TargetAmount) * 100) : 0;

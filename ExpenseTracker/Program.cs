@@ -123,11 +123,14 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Seed data in development
-if (app.Environment.IsDevelopment())
+// Apply migrations and seed data
 {
     using var scope = app.Services.CreateScope();
-    await SeedData.SeedAsync(scope.ServiceProvider);
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
+
+    if (app.Environment.IsDevelopment())
+        await SeedData.SeedAsync(scope.ServiceProvider);
 }
 
 app.Run();

@@ -12,9 +12,6 @@ public static class SeedData
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Ensure database is created and migrations applied
-        await context.Database.MigrateAsync();
-
         // Seed roles
         string[] roles = ["Admin", "User"];
         foreach (var role in roles)
