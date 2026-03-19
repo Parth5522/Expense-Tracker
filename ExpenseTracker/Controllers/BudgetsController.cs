@@ -11,11 +11,13 @@ public class BudgetsController : Controller
 {
     private readonly IBudgetService _budgetService;
     private readonly IExpenseService _expenseService;
+    private readonly INotificationService _notificationService;
 
-    public BudgetsController(IBudgetService budgetService, IExpenseService expenseService)
+    public BudgetsController(IBudgetService budgetService, IExpenseService expenseService, INotificationService notificationService)
     {
         _budgetService = budgetService;
         _expenseService = expenseService;
+        _notificationService = notificationService;
     }
 
     private string GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
@@ -34,6 +36,31 @@ public class BudgetsController : Controller
         ViewBag.Month = m;
         ViewBag.Year = y;
         ViewBag.BudgetStatuses = budgetStatuses;
+
+        // Build spending recommendations based on last 3 months vs current budgets
+        var recommendations = new List<string>();
+        foreach (var b in budgets)
+        {
+            decimal totalSpent = 0;
+            int monthsCounted = 0;
+            for (int i = 1; i <= 3; i++)
+            {
+                var pastDate = DateTime.UtcNow.AddMonths(-i);
+                var pastSpent = await _expenseService.GetSpentAmountAsync(GetUserId(), pastDate.Month, pastDate.Year, b.Category);
+                if (pastSpent > 0) { totalSpent += pastSpent; monthsCounted++; }
+            }
+            if (monthsCounted > 0)
+            {
+                var avg = totalSpent / monthsCounted;
+                var categoryLabel = b.Category.HasValue ? b.Category.ToString() : "Overall";
+                if (avg > b.Amount * 1.1m)
+                    recommendations.Add($"Your average {categoryLabel} spending ({avg:N2}) exceeds your budget ({b.Amount:N2}). Consider raising the budget or reducing spending.");
+                else if (avg < b.Amount * 0.6m)
+                    recommendations.Add($"You consistently spend less than your {categoryLabel} budget (avg {avg:N2} vs {b.Amount:N2}). You could lower the budget by ~{(b.Amount - avg):N2}.");
+            }
+        }
+        ViewBag.Recommendations = recommendations;
+
         return View(budgets);
     }
 
@@ -47,6 +74,9 @@ public class BudgetsController : Controller
         {
             budget.UserId = GetUserId();
             await _budgetService.CreateBudgetAsync(budget);
+            var categoryLabel = budget.Category.HasValue ? budget.Category.ToString() : "Overall";
+            await _notificationService.CreateNotificationAsync(GetUserId(), NotificationType.General,
+                $"Budget created: {categoryLabel} — {budget.Currency} {budget.Amount:N2} for {new DateTime(budget.Year, budget.Month, 1):MMMM yyyy}.");
             TempData["Success"] = "Budget created.";
             return RedirectToAction(nameof(Index));
         }
@@ -71,6 +101,9 @@ public class BudgetsController : Controller
         {
             budget.UserId = GetUserId();
             await _budgetService.UpdateBudgetAsync(budget);
+            var categoryLabel = budget.Category.HasValue ? budget.Category.ToString() : "Overall";
+            await _notificationService.CreateNotificationAsync(GetUserId(), NotificationType.General,
+                $"Budget updated: {categoryLabel} — {budget.Currency} {budget.Amount:N2} for {new DateTime(budget.Year, budget.Month, 1):MMMM yyyy}.");
             TempData["Success"] = "Budget updated.";
             return RedirectToAction(nameof(Index));
         }
@@ -83,7 +116,10 @@ public class BudgetsController : Controller
     {
         var budget = await _budgetService.GetBudgetByIdAsync(id);
         if (budget == null || budget.UserId != GetUserId()) return NotFound();
+        var categoryLabel = budget.Category.HasValue ? budget.Category.ToString() : "Overall";
         await _budgetService.DeleteBudgetAsync(id);
+        await _notificationService.CreateNotificationAsync(GetUserId(), NotificationType.General,
+            $"Budget deleted: {categoryLabel} for {new DateTime(budget.Year, budget.Month, 1):MMMM yyyy}.");
         TempData["Success"] = "Budget deleted.";
         return RedirectToAction(nameof(Index));
     }
