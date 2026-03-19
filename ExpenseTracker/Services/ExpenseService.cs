@@ -124,6 +124,13 @@ namespace ExpenseTracker.Services
                 .Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear)
                 .Sum(e => e.Amount);
 
+            var dailyGroups = allExpenses
+                .Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear)
+                .GroupBy(e => e.Date.Day)
+                .ToDictionary(g => g.Key, g => g.Sum(e => e.Amount));
+
+            var daysInMonth = DateTime.DaysInMonth(currentYear, currentMonth);
+
             var dashboard = new DashboardViewModel
             {
                 TotalExpenses = allExpenses.Sum(e => e.Amount),
@@ -137,13 +144,10 @@ namespace ExpenseTracker.Services
                 ExpensesByCategory = allExpenses
                     .GroupBy(e => e.Category)
                     .ToDictionary(g => g.Key, g => g.Sum(e => e.Amount)),
-                CurrentMonthDaily = allExpenses
-                    .Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear)
-                    .GroupBy(e => e.Date.Day)
-                    .OrderBy(g => g.Key)
+                CurrentMonthDaily = Enumerable.Range(1, daysInMonth)
                     .ToDictionary(
-                        g => g.Key.ToString(),
-                        g => g.Sum(e => e.Amount))
+                        day => day.ToString(),
+                        day => dailyGroups.TryGetValue(day, out var amount) ? amount : 0m)
             };
 
             return dashboard;
