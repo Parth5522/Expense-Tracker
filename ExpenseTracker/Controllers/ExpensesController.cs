@@ -167,6 +167,7 @@ public class ExpensesController : Controller
     private async Task CheckBudgetAlertsAsync(Expense expense)
     {
         var userId = expense.UserId;
+        if (string.IsNullOrEmpty(userId)) return;
         var budgets = await _budgetService.GetBudgetsAsync(userId, expense.Date.Month, expense.Date.Year);
         foreach (var budget in budgets)
         {
@@ -191,9 +192,11 @@ public class ExpensesController : Controller
 
     private async Task CheckLargeTransactionAsync(Expense expense)
     {
+        var userId = expense.UserId;
+        if (string.IsNullOrEmpty(userId)) return;
         var filter = new ExpenseFilterViewModel
         {
-            UserId = expense.UserId,
+            UserId = userId,
             PageSize = int.MaxValue,
             FromDate = DateTime.UtcNow.AddMonths(-3)
         };
@@ -204,7 +207,7 @@ public class ExpensesController : Controller
         var avg = recentExpenses.Average(e => e.AmountInBaseCurrency);
         if (avg > 0 && expense.AmountInBaseCurrency > avg * 3)
         {
-            await _notificationService.CreateNotificationAsync(expense.UserId, NotificationType.General,
+            await _notificationService.CreateNotificationAsync(userId, NotificationType.General,
                 $"💡 Unusual transaction detected: \"{expense.Title}\" ({expense.Currency} {expense.Amount:N2}) is significantly larger than your recent average ({expense.Currency} {avg:N2}).");
         }
     }
