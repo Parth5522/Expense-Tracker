@@ -222,6 +222,11 @@ body {
     padding-bottom: var(--footer-height); /* compensate for fixed footer */
 }
 
+/* Offset main content when fixed sidebar is visible */
+.page-wrapper.has-sidebar {
+    padding-left: var(--sidebar-width);
+}
+
 /* ---- Sidebar profile card ---- */
 .sidebar-profile {
     display: flex;
@@ -267,7 +272,6 @@ body {
 /* ---- Sidebar  – redesigned ---- */
 .sidebar {
     width: var(--sidebar-width);
-    min-height: calc(100vh - var(--navbar-height));
     background: linear-gradient(180deg, #0f172a 0%, #1e293b 55%, #1a2744 100%);
     border-right: none;
     box-shadow: 4px 0 24px rgba(15,23,42,.35);
@@ -275,7 +279,8 @@ body {
     flex-direction: column;
     transition: width var(--transition), transform var(--transition);
     flex-shrink: 0;
-    position: sticky;
+    position: fixed;
+    left: 0;
     top: var(--navbar-height);
     height: calc(100vh - var(--navbar-height));
     overflow-y: auto;
@@ -695,7 +700,7 @@ body {
 .footer {
     position: fixed;
     bottom: 0;
-    left: var(--sidebar-width);
+    left: 0;
     right: 0;
     z-index: 1025;
     background: linear-gradient(90deg, #fff 0%, #f8fafc 100%);
@@ -705,6 +710,11 @@ body {
     font-size: 0.82rem;
     color: #94a3b8;
     box-shadow: 0 -2px 8px rgba(0,0,0,.05);
+}
+
+/* Offset footer when fixed sidebar is visible */
+.page-wrapper.has-sidebar + .footer {
+    left: var(--sidebar-width);
 }
 
 /* ============================================================
@@ -956,12 +966,7 @@ body {
    ============================================================ */
 @media (max-width: 991.98px) {
     .sidebar {
-        position: fixed;
-        top: var(--navbar-height);
-        left: 0;
-        height: calc(100vh - var(--navbar-height));
         transform: translateX(-100%);
-        z-index: 1026;
         box-shadow: 4px 0 20px rgba(0,0,0,.1);
         /* On mobile the sidebar is a full-height overlay; footer spans full width so no bottom padding needed */
         padding-bottom: 0;
@@ -982,6 +987,11 @@ body {
     }
 
     .sidebar-overlay.active { display: block; }
+
+    /* Remove sidebar offset on mobile — sidebar is hidden */
+    .page-wrapper.has-sidebar {
+        padding-left: 0;
+    }
 
     .main-content {
         padding: 1.25rem 1rem;
