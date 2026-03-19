@@ -137,12 +137,12 @@ namespace ExpenseTracker.Services
                 ExpensesByCategory = allExpenses
                     .GroupBy(e => e.Category)
                     .ToDictionary(g => g.Key, g => g.Sum(e => e.Amount)),
-                MonthlyTrends = allExpenses
-                    .Where(e => e.Date >= DateTime.Now.AddMonths(-6))
-                    .GroupBy(e => new { e.Date.Year, e.Date.Month })
-                    .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
+                CurrentMonthDaily = allExpenses
+                    .Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear)
+                    .GroupBy(e => e.Date.Day)
+                    .OrderBy(g => g.Key)
                     .ToDictionary(
-                        g => $"{new DateTime(g.Key.Year, g.Key.Month, 1):MMM yyyy}",
+                        g => g.Key.ToString(),
                         g => g.Sum(e => e.Amount))
             };
 

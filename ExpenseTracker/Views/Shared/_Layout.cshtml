@@ -21,7 +21,8 @@
                 </button>
             }
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <i class="fas fa-wallet me-2"></i>Expense Tracker
+                <span class="brand-icon-wrap"><i class="fas fa-wallet"></i></span>
+                <span>Expense Tracker</span>
             </a>
 
             @if (!SignInManager.IsSignedIn(User))
@@ -49,16 +50,17 @@
                 var displayName = User.FindFirst("DisplayName")?.Value
                     ?? User.Identity?.Name
                     ?? "Account";
-                <ul class="navbar-nav ms-auto">
+                var initials = string.Concat(displayName.Split(' ').Where(w => w.Length > 0).Take(2).Select(w => char.ToUpper(w[0])));
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link btn-nav-pill d-none d-md-flex align-items-center" asp-area="" asp-controller="Expenses" asp-action="Create">
                             <i class="fas fa-plus me-1"></i>Add Expense
                         </a>
                     </li>
-                    <li class="nav-item dropdown ms-2">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i>
-                            <span class="d-none d-sm-inline">@displayName</span>
+                    <li class="nav-item ms-2 dropdown">
+                        <a class="nav-link user-chip dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration:none;">
+                            <span class="user-avatar">@initials</span>
+                            <span class="d-none d-sm-inline ms-1" style="font-size:.88rem;font-weight:600;">@displayName</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li class="px-3 py-2 small text-muted">
@@ -67,7 +69,7 @@
                             <li><hr class="dropdown-divider my-1" /></li>
                             <li>
                                 <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
-                                    <i class="fas fa-id-card me-2"></i>Profile
+                                    <i class="fas fa-id-card me-2 text-primary"></i>Profile
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider my-1" /></li>
@@ -95,6 +97,22 @@
 
             <!-- ===== Sidebar ===== -->
             <aside class="sidebar" id="sidebar">
+                <!-- Sidebar user mini-profile -->
+                <div class="sidebar-profile">
+                    @{
+                        var sbDisplayName = User.FindFirst("DisplayName")?.Value
+                            ?? User.Identity?.Name ?? "User";
+                        var sbInitials = string.Concat(sbDisplayName.Split(' ').Where(w => w.Length > 0).Take(2).Select(w => char.ToUpper(w[0])));
+                    }
+                    <div class="sb-avatar">@sbInitials</div>
+                    <div class="sb-user-info">
+                        <div class="sb-user-name">@sbDisplayName</div>
+                        <div class="sb-user-role">
+                            @(User.IsInRole("Admin") ? "Administrator" : "Member")
+                        </div>
+                    </div>
+                </div>
+
                 <p class="sidebar-section-title">Main</p>
                 <ul class="sidebar-nav">
                     <li>
@@ -170,9 +188,9 @@
                 }
 
                 <div class="sidebar-footer">
-                    <a class="nav-link" asp-controller="Account" asp-action="Profile" style="display:flex;align-items:center;gap:.75rem;color:#475569;">
-                        <i class="fas fa-user-circle" style="color:#94a3b8;width:20px;text-align:center;font-size:1.1rem;"></i>
-                        <span style="font-size:.875rem;font-weight:500;">Profile</span>
+                    <a class="nav-link" asp-controller="Account" asp-action="Profile" style="display:flex;align-items:center;gap:.75rem;color:rgba(199,210,254,.75);">
+                        <i class="fas fa-user-circle" style="color:rgba(165,180,252,.6);width:20px;text-align:center;font-size:1.1rem;"></i>
+                        <span style="font-size:.875rem;font-weight:500;">Profile Settings</span>
                     </a>
                 </div>
             </aside>
