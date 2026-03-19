@@ -1,11 +1,39 @@
 @model ExpenseTracker.ViewModels.ReportViewModel
 @{
     ViewData["Title"] = "Reports";
+    var thisMonth = DateTime.UtcNow;
+    var lastMonth = thisMonth.AddMonths(-1);
+    var monthlyLabels = System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdowns.Select(m => m.MonthName));
+    var monthlyExpenses = System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdowns.Select(m => m.Expenses));
+    var monthlyIncome = System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdowns.Select(m => m.Income));
+    var catLabels = System.Text.Json.JsonSerializer.Serialize(Model.ExpensesByCategory.Keys);
+    var catValues = System.Text.Json.JsonSerializer.Serialize(Model.ExpensesByCategory.Values);
 }
 
 <div class="fade-in">
     <div class="page-header">
         <h1 class="page-title"><i class="fas fa-chart-bar"></i>Reports</h1>
+    </div>
+
+    <!-- Quick Presets -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <a asp-action="Index" asp-route-from="@(new DateTime(thisMonth.Year, thisMonth.Month, 1).ToString("yyyy-MM-dd"))"
+           asp-route-to="@thisMonth.ToString("yyyy-MM-dd")"
+           class="btn btn-sm @(Model.SelectedYear == null && Model.FromDate.Day == 1 && Model.FromDate.Month == thisMonth.Month && Model.FromDate.Year == thisMonth.Year ? "btn-primary" : "btn-outline-primary")">
+            <i class="fas fa-calendar-day me-1"></i>This Month
+        </a>
+        <a asp-action="Index" asp-route-from="@(new DateTime(lastMonth.Year, lastMonth.Month, 1).ToString("yyyy-MM-dd"))"
+           asp-route-to="@(new DateTime(lastMonth.Year, lastMonth.Month, DateTime.DaysInMonth(lastMonth.Year, lastMonth.Month)).ToString("yyyy-MM-dd"))"
+           class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-calendar-week me-1"></i>Last Month
+        </a>
+        @foreach (var y in Model.AvailableYears.Take(3))
+        {
+            <a asp-action="Index" asp-route-year="@y"
+               class="btn btn-sm @(Model.SelectedYear == y ? "btn-success" : "btn-outline-success")">
+                <i class="fas fa-calendar-alt me-1"></i>@y
+            </a>
+        }
     </div>
 
     <!-- Date Filter -->
@@ -85,6 +113,61 @@
         </a>
     </div>
 
+    @if (Model.MonthlyBreakdowns.Any())
+    {
+        <!-- Monthly Overview Chart -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2 text-primary"></i>Monthly Overview
+                @if (Model.SelectedYear.HasValue)
+                {
+                    <span class="badge bg-success ms-2">@Model.SelectedYear</span>
+                }
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" height="80"></canvas>
+            </div>
+        </div>
+
+        <!-- Monthly Breakdown Table -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-2 text-info"></i>Monthly Breakdown
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th class="text-end">Expenses</th>
+                            <th class="text-end">Income</th>
+                            <th class="text-end">Net Savings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var mb in Model.MonthlyBreakdowns)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@mb.MonthName</td>
+                                <td class="text-end text-danger">@mb.Expenses.ToString("N2")</td>
+                                <td class="text-end text-success">@mb.Income.ToString("N2")</td>
+                                <td class="text-end @(mb.NetSavings >= 0 ? "text-info" : "text-warning") fw-semibold">@mb.NetSavings.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td class="fw-bold">Total</td>
+                            <td class="text-end fw-bold text-danger">@Model.TotalExpenses.ToString("N2")</td>
+                            <td class="text-end fw-bold text-success">@Model.TotalIncome.ToString("N2")</td>
+                            <td class="text-end fw-bold @(Model.NetSavings >= 0 ? "text-info" : "text-warning")">@Model.NetSavings.ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    }
+
     <div class="row g-4">
         <!-- Expenses by Category -->
         <div class="col-lg-6">
@@ -132,8 +215,19 @@
             </div>
         </div>
 
-        <!-- Income by Source -->
+        <!-- Income by Source + Expense Doughnut -->
         <div class="col-lg-6">
+            @if (Model.ExpensesByCategory.Any())
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-pie me-2 text-danger"></i>Expense Distribution
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+                        <canvas id="catChart" style="max-height:220px;"></canvas>
+                    </div>
+                </div>
+            }
             <div class="card h-100">
                 <div class="card-header">
                     <i class="fas fa-hand-holding-usd me-2 text-success"></i>Income by Source
@@ -177,3 +271,68 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+    (function () {
+        @if (Model.MonthlyBreakdowns.Any())
+        {
+            <text>
+            var mLabels   = @Html.Raw(monthlyLabels);
+            var mExpenses = @Html.Raw(monthlyExpenses);
+            var mIncome   = @Html.Raw(monthlyIncome);
+            new Chart(document.getElementById('monthlyChart'), {
+                type: 'bar',
+                data: {
+                    labels: mLabels,
+                    datasets: [
+                        {
+                            label: 'Expenses',
+                            data: mExpenses,
+                            backgroundColor: 'rgba(239,68,68,0.7)',
+                            borderColor: 'rgba(239,68,68,1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Income',
+                            data: mIncome,
+                            backgroundColor: 'rgba(34,197,94,0.7)',
+                            borderColor: 'rgba(34,197,94,1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            </text>
+        }
+
+        @if (Model.ExpensesByCategory.Any())
+        {
+            <text>
+            var cLabels = @Html.Raw(catLabels);
+            var cValues = @Html.Raw(catValues);
+            new Chart(document.getElementById('catChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: cLabels,
+                    datasets: [{
+                        data: cValues,
+                        backgroundColor: ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#8b5cf6','#ec4899','#06b6d4','#14b8a6','#64748b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+            </text>
+        }
+    })();
+    </script>
+}
+

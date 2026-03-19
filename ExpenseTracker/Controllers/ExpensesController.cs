@@ -14,13 +14,23 @@ public class ExpensesController : Controller
     private readonly ITagService _tagService;
     private readonly IAttachmentService _attachmentService;
     private readonly ICurrencyService _currencyService;
+    private readonly IBudgetService _budgetService;
+    private readonly INotificationService _notificationService;
 
-    public ExpensesController(IExpenseService expenseService, ITagService tagService, IAttachmentService attachmentService, ICurrencyService currencyService)
+    public ExpensesController(
+        IExpenseService expenseService,
+        ITagService tagService,
+        IAttachmentService attachmentService,
+        ICurrencyService currencyService,
+        IBudgetService budgetService,
+        INotificationService notificationService)
     {
         _expenseService = expenseService;
         _tagService = tagService;
         _attachmentService = attachmentService;
         _currencyService = currencyService;
+        _budgetService = budgetService;
+        _notificationService = notificationService;
     }
 
     private string GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
@@ -64,6 +74,9 @@ public class ExpensesController : Controller
 
             if (attachment != null && attachment.Length > 0)
                 await _attachmentService.UploadAsync(attachment, created.Id, GetUserId());
+
+            await CheckBudgetAlertsAsync(created);
+            await CheckLargeTransactionAsync(created);
 
             TempData["Success"] = "Expense created successfully.";
             return RedirectToAction(nameof(Index));
@@ -148,4 +161,51 @@ public class ExpensesController : Controller
     }
 
     private static string Escape(string val) => $"\"{val.Replace("\"", "\"\"")}\"";
+
+    // ── Notification helpers ──────────────────────────────────────────────
+
+    private async Task CheckBudgetAlertsAsync(Expense expense)
+    {
+        var userId = expense.UserId;
+        var budgets = await _budgetService.GetBudgetsAsync(userId, expense.Date.Month, expense.Date.Year);
+        foreach (var budget in budgets)
+        {
+            if (budget.Category.HasValue && budget.Category != expense.Category) continue;
+
+            var spent = await _expenseService.GetSpentAmountAsync(userId, expense.Date.Month, expense.Date.Year, budget.Category);
+            var pct = budget.Amount > 0 ? spent / budget.Amount * 100 : 0;
+            var categoryLabel = budget.Category.HasValue ? budget.Category.ToString() : "Overall";
+
+            if (spent > budget.Amount)
+            {
+                await _notificationService.CreateNotificationAsync(userId, NotificationType.BudgetExceeded,
+                    $"⚠️ Budget exceeded for {categoryLabel}! Spent {budget.Currency} {spent:N2} of {budget.Currency} {budget.Amount:N2} ({pct:N0}% used).");
+            }
+            else if (pct >= 80)
+            {
+                await _notificationService.CreateNotificationAsync(userId, NotificationType.BudgetExceeded,
+                    $"🔔 Approaching budget limit for {categoryLabel}: {pct:N0}% used ({budget.Currency} {spent:N2} of {budget.Currency} {budget.Amount:N2}).");
+            }
+        }
+    }
+
+    private async Task CheckLargeTransactionAsync(Expense expense)
+    {
+        var filter = new ExpenseFilterViewModel
+        {
+            UserId = expense.UserId,
+            PageSize = int.MaxValue,
+            FromDate = DateTime.UtcNow.AddMonths(-3)
+        };
+        var result = await _expenseService.GetFilteredExpensesAsync(filter);
+        var recentExpenses = result.Expenses.Where(e => e.Id != expense.Id).ToList();
+        if (recentExpenses.Count < 3) return;
+
+        var avg = recentExpenses.Average(e => e.AmountInBaseCurrency);
+        if (avg > 0 && expense.AmountInBaseCurrency > avg * 3)
+        {
+            await _notificationService.CreateNotificationAsync(expense.UserId, NotificationType.General,
+                $"💡 Unusual transaction detected: \"{expense.Title}\" ({expense.Currency} {expense.Amount:N2}) is significantly larger than your recent average ({expense.Currency} {avg:N2}).");
+        }
+    }
 }

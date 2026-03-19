@@ -26,6 +26,9 @@
                 <div class="mb-4 form-check">
                     <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
                     <label asp-for="RememberMe" class="form-check-label text-muted">Remember me</label>
+                    <div class="mt-1">
+                        <a asp-action="ForgotPassword" class="small text-primary">Forgot your password?</a>
+                    </div>
                 </div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary btn-lg">
