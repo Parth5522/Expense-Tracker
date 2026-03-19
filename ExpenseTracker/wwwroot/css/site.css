@@ -49,8 +49,8 @@ body {
    ============================================================ */
 .navbar {
     height: var(--navbar-height);
-    background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 60%, #3730a3 100%) !important;
-    box-shadow: 0 4px 20px rgba(79,70,229,.4);
+    background: linear-gradient(135deg, #070c18 0%, #0c1427 60%, #080f1e 100%) !important;
+    box-shadow: 0 4px 20px rgba(6,9,20,.6);
     z-index: 1030;
     padding: 0 1.25rem;
     position: sticky;
