@@ -26,12 +26,41 @@ public class AdminController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var userCount = await _userManager.Users.CountAsync();
-        var expenseCount = await _context.Expenses.CountAsync();
-        var incomeCount = await _context.Incomes.CountAsync();
-        ViewBag.UserCount = userCount;
-        ViewBag.ExpenseCount = expenseCount;
-        ViewBag.IncomeCount = incomeCount;
+        var now = DateTime.UtcNow;
+        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var monthEnd = monthStart.AddMonths(1);
+
+        var users = await _userManager.Users.ToListAsync();
+
+        var monthlyExpenses = await _context.Expenses
+            .Where(e => e.Date >= monthStart && e.Date < monthEnd)
+            .GroupBy(e => e.UserId)
+            .Select(g => new { UserId = g.Key, Total = g.Sum(e => e.Amount) })
+            .ToListAsync();
+
+        var monthlyIncomes = await _context.Incomes
+            .Where(i => i.Date >= monthStart && i.Date < monthEnd)
+            .GroupBy(i => i.UserId)
+            .Select(g => new { UserId = g.Key, Total = g.Sum(i => i.Amount) })
+            .ToListAsync();
+
+        var expenseDict = monthlyExpenses
+            .Where(x => x.UserId != null)
+            .ToDictionary(x => x.UserId!, x => x.Total);
+        var incomeDict = monthlyIncomes
+            .Where(x => x.UserId != null)
+            .ToDictionary(x => x.UserId!, x => x.Total);
+
+        var userSummaries = users.Select(u => new
+        {
+            User = u,
+            MonthlyExpense = expenseDict.TryGetValue(u.Id, out var exp) ? exp : 0m,
+            MonthlyIncome = incomeDict.TryGetValue(u.Id, out var inc) ? inc : 0m
+        }).ToList();
+
+        ViewBag.UserCount = users.Count;
+        ViewBag.MonthLabel = now.ToString("MMMM yyyy");
+        ViewBag.UserSummaries = userSummaries;
         return View();
     }
 
