@@ -61,6 +61,7 @@ public class GoalsController : Controller
         if (ModelState.IsValid)
         {
             goal.UserId = GetUserId();
+            goal.CreatedAt = existing.CreatedAt;
             goal.UpdatedAt = DateTime.UtcNow;
             if (goal.TargetDate.HasValue)
                 goal.TargetDate = DateTime.SpecifyKind(goal.TargetDate.Value, DateTimeKind.Utc);
