@@ -89,7 +89,7 @@
     </nav>
 
     <!-- ===== Page Wrapper ===== -->
-    <div class="page-wrapper">
+    <div class="page-wrapper @(SignInManager.IsSignedIn(User) ? "has-sidebar" : "")">
         @if (SignInManager.IsSignedIn(User))
         {
             <!-- Sidebar overlay (mobile) -->
