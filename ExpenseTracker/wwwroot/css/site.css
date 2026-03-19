@@ -16,6 +16,7 @@
     --sidebar-width: 260px;
     --sidebar-collapsed-width: 70px;
     --navbar-height: 64px;
+    --footer-height: 44px;
     --transition: 0.25s ease;
     --radius: 12px;
     --radius-sm: 8px;
@@ -53,7 +54,6 @@ body {
     z-index: 1030;
     padding: 0 1.25rem;
     position: relative;
-    overflow: hidden;
 }
 
 /* Decorative glow blobs behind navbar */
@@ -219,7 +219,7 @@ body {
     display: flex;
     flex: 1;
     min-height: calc(100vh - var(--navbar-height));
-    padding-bottom: 44px; /* compensate for fixed footer */
+    padding-bottom: var(--footer-height); /* compensate for fixed footer */
 }
 
 /* ---- Sidebar profile card ---- */
@@ -280,7 +280,8 @@ body {
     height: calc(100vh - var(--navbar-height));
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 100;
+    z-index: 1026;
+    padding-bottom: var(--footer-height); /* leave room for fixed footer */
 }
 
 .sidebar-section-title {
@@ -694,7 +695,7 @@ body {
 .footer {
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: var(--sidebar-width);
     right: 0;
     z-index: 1025;
     background: linear-gradient(90deg, #fff 0%, #f8fafc 100%);
@@ -960,8 +961,10 @@ body {
         left: 0;
         height: calc(100vh - var(--navbar-height));
         transform: translateX(-100%);
-        z-index: 1020;
+        z-index: 1026;
         box-shadow: 4px 0 20px rgba(0,0,0,.1);
+        /* On mobile the sidebar is a full-height overlay; footer spans full width so no bottom padding needed */
+        padding-bottom: 0;
     }
 
     .sidebar.sidebar-open {
@@ -982,6 +985,10 @@ body {
 
     .main-content {
         padding: 1.25rem 1rem;
+    }
+
+    .footer {
+        left: 0;
     }
 
     .stat-card { margin-bottom: 1rem; }

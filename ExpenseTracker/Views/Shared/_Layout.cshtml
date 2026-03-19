@@ -97,22 +97,6 @@
 
             <!-- ===== Sidebar ===== -->
             <aside class="sidebar" id="sidebar">
-                <!-- Sidebar user mini-profile -->
-                <div class="sidebar-profile">
-                    @{
-                        var sbDisplayName = User.FindFirst("DisplayName")?.Value
-                            ?? User.Identity?.Name ?? "User";
-                        var sbInitials = string.Concat(sbDisplayName.Split(' ').Where(w => w.Length > 0).Take(2).Select(w => char.ToUpper(w[0])));
-                    }
-                    <div class="sb-avatar">@sbInitials</div>
-                    <div class="sb-user-info">
-                        <div class="sb-user-name">@sbDisplayName</div>
-                        <div class="sb-user-role">
-                            @(User.IsInRole("Admin") ? "Administrator" : "Member")
-                        </div>
-                    </div>
-                </div>
-
                 <p class="sidebar-section-title">Main</p>
                 <ul class="sidebar-nav">
                     <li>
