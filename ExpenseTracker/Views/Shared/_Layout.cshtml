@@ -97,6 +97,8 @@
 
             <!-- ===== Sidebar ===== -->
             <aside class="sidebar" id="sidebar">
+                @if (!User.IsInRole("Admin"))
+                {
                 <p class="sidebar-section-title">Main</p>
                 <ul class="sidebar-nav">
                     <li>
@@ -158,6 +160,7 @@
                         </a>
                     </li>
                 </ul>
+                }
 
                 @if (User.IsInRole("Admin"))
                 {
