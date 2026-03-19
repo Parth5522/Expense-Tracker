@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class GoalsController : Controller
 {
     private readonly IGoalService _goalService;

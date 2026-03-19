@@ -116,51 +116,51 @@
                     </li>
                 </ul>
 
+                <p class="sidebar-section-title">Finance</p>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Income" asp-action="Index">
+                            <i class="fas fa-dollar-sign"></i><span>Income</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Budgets" asp-action="Index">
+                            <i class="fas fa-piggy-bank"></i><span>Budgets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Goals" asp-action="Index">
+                            <i class="fas fa-bullseye"></i><span>Goals</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Recurring" asp-action="Index">
+                            <i class="fas fa-sync-alt"></i><span>Recurring</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <p class="sidebar-section-title">Insights</p>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Reports" asp-action="Index">
+                            <i class="fas fa-chart-bar"></i><span>Reports</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Tags" asp-action="Index">
+                            <i class="fas fa-tags"></i><span>Tags</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Notifications" asp-action="Index">
+                            <i class="fas fa-bell"></i><span>Notifications</span>
+                        </a>
+                    </li>
+                </ul>
+
                 @if (User.IsInRole("Admin"))
                 {
-                    <p class="sidebar-section-title">Finance</p>
-                    <ul class="sidebar-nav">
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Income" asp-action="Index">
-                                <i class="fas fa-dollar-sign"></i><span>Income</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Budgets" asp-action="Index">
-                                <i class="fas fa-piggy-bank"></i><span>Budgets</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Goals" asp-action="Index">
-                                <i class="fas fa-bullseye"></i><span>Goals</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Recurring" asp-action="Index">
-                                <i class="fas fa-sync-alt"></i><span>Recurring</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <p class="sidebar-section-title">Insights</p>
-                    <ul class="sidebar-nav">
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Reports" asp-action="Index">
-                                <i class="fas fa-chart-bar"></i><span>Reports</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Tags" asp-action="Index">
-                                <i class="fas fa-tags"></i><span>Tags</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link" asp-area="" asp-controller="Notifications" asp-action="Index">
-                                <i class="fas fa-bell"></i><span>Notifications</span>
-                            </a>
-                        </li>
-                    </ul>
-
                     <p class="sidebar-section-title">System</p>
                     <ul class="sidebar-nav">
                         <li>

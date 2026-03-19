@@ -1,10 +1,14 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
+    var userSummaries = ViewBag.UserSummaries as IEnumerable<dynamic>;
 }
 
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-5 fw-bold"><i class="fas fa-shield-alt me-2"></i>Admin Dashboard</h1>
+        <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">
+            <i class="fas fa-users-cog me-2"></i>Manage Users
+        </a>
     </div>
 
     <div class="row g-4 mb-4">
@@ -21,57 +25,39 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-receipt fa-2x text-danger"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small">Total Expenses</div>
-                        <div class="fs-2 fw-bold">@ViewBag.ExpenseCount</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-dollar-sign fa-2x text-success"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small">Total Incomes</div>
-                        <div class="fs-2 fw-bold">@ViewBag.IncomeCount</div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-body text-center p-4">
-                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                    <h5 class="card-title">User Management</h5>
-                    <p class="card-text text-muted">View, manage and assign roles to users.</p>
-                    <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">
-                        <i class="fas fa-users-cog me-2"></i>Manage Users
-                    </a>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-calendar-alt me-2"></i>Monthly Expense &amp; Income by User
+            <span class="badge bg-secondary ms-1">@ViewBag.MonthLabel</span>
         </div>
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-body text-center p-4">
-                    <i class="fas fa-coins fa-3x text-warning mb-3"></i>
-                    <h5 class="card-title">Currency Management</h5>
-                    <p class="card-text text-muted">View and manage supported currencies and rates.</p>
-                    <a asp-controller="Admin" asp-action="Currencies" class="btn btn-warning">
-                        <i class="fas fa-coins me-2"></i>Manage Currencies
-                    </a>
-                </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th class="text-danger">Monthly Expenses</th>
+                            <th class="text-success">Monthly Income</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (userSummaries != null)
+                        {
+                            @foreach (var item in userSummaries)
+                            {
+                                <tr>
+                                    <td>@(item.User.DisplayName ?? item.User.UserName ?? item.User.Email ?? "Unknown")</td>
+                                    <td>@item.User.Email</td>
+                                    <td class="text-danger fw-semibold">@item.MonthlyExpense.ToString("N2")</td>
+                                    <td class="text-success fw-semibold">@item.MonthlyIncome.ToString("N2")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
