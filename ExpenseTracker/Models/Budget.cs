@@ -23,7 +23,6 @@ public class Budget
     [StringLength(3)]
     public string Currency { get; set; } = "USD";
 
-    [Required]
-    public string UserId { get; set; } = string.Empty;
+    public string? UserId { get; set; }
     public ApplicationUser? User { get; set; }
 }
