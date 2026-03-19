@@ -1,0 +1,100 @@
+@model IEnumerable<ExpenseTracker.Models.Expense>
+@{
+    ViewData["Title"] = "All Expenses";
+    var userMap = ViewBag.UserMap as Dictionary<string, string> ?? new Dictionary<string, string>();
+    int page = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+    int totalItems = ViewBag.TotalItems;
+}
+
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold"><i class="fas fa-receipt me-2"></i>All Expenses</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Admin
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <i class="fas fa-list me-2 text-danger"></i>System-Wide Expenses
+                <span class="badge bg-danger ms-1">@totalItems</span>
+            </span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th class="text-end">Amount</th>
+                                <th>Currency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Date.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @(item.UserId != null && userMap.TryGetValue(item.UserId, out var name) ? name : "Unknown")
+                                        </span>
+                                    </td>
+                                    <td><strong>@item.Title</strong></td>
+                                    <td>
+                                        <span class="badge category-@item.Category.ToString().ToLower()">
+                                            @item.Category
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-semibold text-danger">@item.Amount.ToString("N2")</td>
+                                    <td>@item.Currency</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (totalPages > 1)
+                {
+                    <div class="px-3 pb-3">
+                        <nav aria-label="Expenses pagination">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(page == 1 ? "disabled" : "")">
+                                    <a class="page-link" asp-action="AllExpenses" asp-route-page="@(page - 1)">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= totalPages; i++)
+                                {
+                                    <li class="page-item @(page == i ? "active" : "")">
+                                        <a class="page-link" asp-action="AllExpenses" asp-route-page="@i">@i</a>
+                                    </li>
+                                }
+                                <li class="page-item @(page == totalPages ? "disabled" : "")">
+                                    <a class="page-link" asp-action="AllExpenses" asp-route-page="@(page + 1)">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Expenses Found</h3>
+                    <p>No expenses have been recorded in the system yet.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

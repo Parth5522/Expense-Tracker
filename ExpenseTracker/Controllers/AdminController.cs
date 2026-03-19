@@ -61,7 +61,53 @@ public class AdminController : Controller
         ViewBag.UserCount = users.Count;
         ViewBag.MonthLabel = now.ToString("MMMM yyyy");
         ViewBag.UserSummaries = userSummaries;
+
+        ViewBag.TotalExpenses = await _context.Expenses.SumAsync(e => (decimal?)e.Amount) ?? 0m;
+        ViewBag.TotalIncome = await _context.Incomes.SumAsync(i => (decimal?)i.Amount) ?? 0m;
+        ViewBag.TotalExpenseCount = await _context.Expenses.CountAsync();
+        ViewBag.TotalIncomeCount = await _context.Incomes.CountAsync();
+
         return View();
+    }
+
+    public async Task<IActionResult> AllExpenses(int page = 1, int pageSize = 20)
+    {
+        var userMap = await _userManager.Users
+            .ToDictionaryAsync(u => u.Id, u => u.DisplayName ?? u.UserName ?? u.Email ?? u.Id);
+
+        var query = _context.Expenses.OrderByDescending(e => e.Date);
+        var totalItems = await query.CountAsync();
+        var expenses = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.UserMap = userMap;
+        ViewBag.Page = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalItems = totalItems;
+        ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        return View(expenses);
+    }
+
+    public async Task<IActionResult> AllIncome(int page = 1, int pageSize = 20)
+    {
+        var userMap = await _userManager.Users
+            .ToDictionaryAsync(u => u.Id, u => u.DisplayName ?? u.UserName ?? u.Email ?? u.Id);
+
+        var query = _context.Incomes.OrderByDescending(i => i.Date);
+        var totalItems = await query.CountAsync();
+        var incomes = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.UserMap = userMap;
+        ViewBag.Page = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalItems = totalItems;
+        ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        return View(incomes);
     }
 
     public async Task<IActionResult> Users()
