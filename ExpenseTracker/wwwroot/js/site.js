@@ -77,6 +77,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// ── Real-time notification counter ──
+(function () {
+    var badge = document.getElementById('notif-badge');
+    if (!badge) return;
+
+    function updateNotifCount() {
+        var el = document.getElementById('notif-badge');
+        if (!el) return;
+        fetch('/Notifications/GetUnreadCount')
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (data) {
+                if (!data) return;
+                if (data.count > 0) {
+                    el.textContent = data.count;
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            })
+            .catch(function (err) { console.error('Failed to fetch notification count:', err); });
+    }
+
+    updateNotifCount();
+    setInterval(updateNotifCount, 30000);
+})();
+
 // Show loading state on form submit
 function showLoadingSpinner(formElement) {
     var btn = formElement.querySelector('button[type="submit"]');
