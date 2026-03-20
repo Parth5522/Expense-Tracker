@@ -14,7 +14,7 @@ public class RecurringTransactionService : IRecurringTransactionService
         await _context.RecurringTransactions.Where(r => r.UserId == userId).ToListAsync();
 
     public async Task<RecurringTransaction?> GetByIdAsync(int id) =>
-        await _context.RecurringTransactions.FindAsync(id);
+        await _context.RecurringTransactions.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
 
     public async Task<RecurringTransaction> CreateAsync(RecurringTransaction transaction)
     {
