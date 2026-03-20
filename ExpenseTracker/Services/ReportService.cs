@@ -20,22 +20,22 @@ public class ReportService : IReportService
         var expenses = await query.OrderByDescending(e => e.Date).ToListAsync();
 
         using var memoryStream = new MemoryStream();
-        using var writer = new StreamWriter(memoryStream);
-        using var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture));
-
-        csv.WriteRecords(expenses.Select(e => new
+        using (var writer = new StreamWriter(memoryStream, leaveOpen: true))
+        using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
         {
-            e.Id,
-            e.Title,
-            e.Description,
-            e.Amount,
-            e.Currency,
-            Category = e.Category.ToString(),
-            Date = e.Date.ToString("yyyy-MM-dd"),
-            e.AmountInBaseCurrency
-        }));
+            csv.WriteRecords(expenses.Select(e => new
+            {
+                e.Id,
+                e.Title,
+                e.Description,
+                e.Amount,
+                e.Currency,
+                Category = e.Category.ToString(),
+                Date = e.Date.ToString("yyyy-MM-dd"),
+                e.AmountInBaseCurrency
+            }));
+        }
 
-        await writer.FlushAsync();
         return memoryStream.ToArray();
     }
 
@@ -47,22 +47,22 @@ public class ReportService : IReportService
         var incomes = await query.OrderByDescending(i => i.Date).ToListAsync();
 
         using var memoryStream = new MemoryStream();
-        using var writer = new StreamWriter(memoryStream);
-        using var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture));
-
-        csv.WriteRecords(incomes.Select(i => new
+        using (var writer = new StreamWriter(memoryStream, leaveOpen: true))
+        using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
         {
-            i.Id,
-            i.Title,
-            i.Description,
-            i.Amount,
-            i.Currency,
-            Source = i.Source.ToString(),
-            Date = i.Date.ToString("yyyy-MM-dd"),
-            i.AmountInBaseCurrency
-        }));
+            csv.WriteRecords(incomes.Select(i => new
+            {
+                i.Id,
+                i.Title,
+                i.Description,
+                i.Amount,
+                i.Currency,
+                Source = i.Source.ToString(),
+                Date = i.Date.ToString("yyyy-MM-dd"),
+                i.AmountInBaseCurrency
+            }));
+        }
 
-        await writer.FlushAsync();
         return memoryStream.ToArray();
     }
 }
