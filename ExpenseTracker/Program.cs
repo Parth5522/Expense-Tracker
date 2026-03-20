@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -127,7 +128,44 @@ app.MapControllerRoute(
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await context.Database.MigrateAsync();
+
+    // PostgreSQL error code for "relation already exists"
+    const string PostgresDuplicateTableSqlState = "42P07";
+
+    // Derive the EF Core product version at runtime so the migrations-history rows
+    // stay consistent with whatever version is actually installed.
+    var efProductVersion = typeof(Microsoft.EntityFrameworkCore.DbContext)
+        .Assembly
+        .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()
+        ?.InformationalVersion ?? "8.0.0";
+
+    try
+    {
+        await context.Database.MigrateAsync();
+    }
+    catch (Npgsql.PostgresException ex) when (ex.SqlState == PostgresDuplicateTableSqlState)
+    {
+        // One or more tables already exist in the database, which means the schema was
+        // previously created outside of EF Core migrations (e.g. via EnsureCreated or a
+        // prior manual setup).  Ensure the migrations history table exists and mark every
+        // known migration as applied so that subsequent incremental migrations run correctly.
+        await context.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
+                ""MigrationId"" character varying(150) NOT NULL,
+                ""ProductVersion"" character varying(32) NOT NULL,
+                CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY (""MigrationId"")
+            )");
+
+        foreach (var migrationId in context.Database.GetMigrations())
+        {
+            await context.Database.ExecuteSqlRawAsync(
+                @"INSERT INTO ""__EFMigrationsHistory"" (""MigrationId"", ""ProductVersion"")
+                  VALUES ({0}, {1})
+                  ON CONFLICT DO NOTHING",
+                migrationId,
+                efProductVersion);
+        }
+    }
 
     if (app.Environment.IsDevelopment())
         await SeedData.SeedAsync(scope.ServiceProvider);
