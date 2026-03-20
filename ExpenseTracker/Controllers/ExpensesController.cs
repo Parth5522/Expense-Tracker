@@ -106,11 +106,14 @@ public class ExpensesController : Controller
 
         if (ModelState.IsValid)
         {
-            expense.UserId = GetUserId();
-            expense.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
-            expense.AmountInBaseCurrency = expense.Amount * expense.ExchangeRate;
-            expense.UpdatedAt = DateTime.UtcNow;
-            await _expenseService.UpdateExpenseAsync(expense);
+            existing.Title = expense.Title;
+            existing.Description = expense.Description;
+            existing.Amount = expense.Amount;
+            existing.Category = expense.Category;
+            existing.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
+            existing.AmountInBaseCurrency = existing.Amount * existing.ExchangeRate;
+            existing.UpdatedAt = DateTime.UtcNow;
+            await _expenseService.UpdateExpenseAsync(existing);
 
             if (selectedTags != null)
                 await _expenseService.SetTagsAsync(id, selectedTags);
