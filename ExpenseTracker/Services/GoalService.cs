@@ -14,7 +14,7 @@ public class GoalService : IGoalService
         await _context.Goals.Where(g => g.UserId == userId).ToListAsync();
 
     public async Task<Goal?> GetGoalByIdAsync(int id) =>
-        await _context.Goals.FindAsync(id);
+        await _context.Goals.AsNoTracking().FirstOrDefaultAsync(g => g.Id == id);
 
     public async Task<Goal> CreateGoalAsync(Goal goal)
     {

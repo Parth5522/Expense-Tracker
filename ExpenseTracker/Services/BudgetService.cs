@@ -14,7 +14,7 @@ public class BudgetService : IBudgetService
         await _context.Budgets.Where(b => b.UserId == userId && b.Month == month && b.Year == year).ToListAsync();
 
     public async Task<Budget?> GetBudgetByIdAsync(int id) =>
-        await _context.Budgets.FindAsync(id);
+        await _context.Budgets.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
 
     public async Task<Budget> CreateBudgetAsync(Budget budget)
     {
