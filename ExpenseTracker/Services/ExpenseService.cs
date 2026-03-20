@@ -87,18 +87,7 @@ namespace ExpenseTracker.Services
 
         public async Task<Expense> UpdateExpenseAsync(Expense expense)
         {
-            var tracked = _context.ChangeTracker.Entries<Expense>()
-                .FirstOrDefault(e => e.Entity.Id == expense.Id);
-
-            if (tracked != null)
-            {
-                tracked.CurrentValues.SetValues(expense);
-            }
-            else
-            {
-                _context.Entry(expense).State = EntityState.Modified;
-            }
-
+            _context.Entry(expense).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return expense;
         }
