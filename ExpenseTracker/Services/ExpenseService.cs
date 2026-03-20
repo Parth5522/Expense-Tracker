@@ -87,6 +87,10 @@ namespace ExpenseTracker.Services
 
         public async Task<Expense> UpdateExpenseAsync(Expense expense)
         {
+            var local = _context.Set<Expense>().Local.FirstOrDefault(e => e.Id == expense.Id);
+            if (local != null)
+                _context.Entry(local).State = EntityState.Detached;
+
             _context.Entry(expense).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return expense;
