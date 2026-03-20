@@ -7,8 +7,13 @@ namespace ExpenseTracker.Services;
 public class RecurringTransactionService : IRecurringTransactionService
 {
     private readonly ApplicationDbContext _context;
+    private readonly INotificationService _notificationService;
 
-    public RecurringTransactionService(ApplicationDbContext context) => _context = context;
+    public RecurringTransactionService(ApplicationDbContext context, INotificationService notificationService)
+    {
+        _context = context;
+        _notificationService = notificationService;
+    }
 
     public async Task<List<RecurringTransaction>> GetRecurringTransactionsAsync(string userId) =>
         await _context.RecurringTransactions.Where(r => r.UserId == userId).ToListAsync();
@@ -92,6 +97,12 @@ public class RecurringTransactionService : IRecurringTransactionService
 
             if (rt.EndDate.HasValue && rt.NextRunAt > rt.EndDate.Value)
                 rt.IsActive = false;
+
+            if (!string.IsNullOrEmpty(rt.UserId))
+                await _notificationService.CreateNotificationAsync(
+                    rt.UserId,
+                    NotificationType.RecurringTransactionCreated,
+                    $"Recurring {rt.Type.ToString().ToLower()} '{rt.Title}' of {rt.Amount} {rt.Currency} has been processed.");
         }
 
         await _context.SaveChangesAsync();

@@ -66,8 +66,9 @@ public class GoalsController : Controller
             if (goal.TargetDate.HasValue)
                 goal.TargetDate = DateTime.SpecifyKind(goal.TargetDate.Value, DateTimeKind.Utc);
             var wasAchieved = existing.IsAchieved;
+            goal.IsAchieved = goal.CurrentAmount >= goal.TargetAmount;
             await _goalService.UpdateGoalAsync(goal);
-            if (!wasAchieved && goal.CurrentAmount >= goal.TargetAmount)
+            if (!wasAchieved && goal.IsAchieved)
                 await _notificationService.CreateNotificationAsync(GetUserId(), NotificationType.GoalAchieved, $"Congratulations! You achieved your goal: {goal.Name}");
             TempData["Success"] = "Goal updated.";
             return RedirectToAction(nameof(Index));
