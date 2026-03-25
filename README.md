@@ -1,55 +1,97 @@
 # Expense Tracker
 
-A complete, modern expense tracking web application built with ASP.NET Core MVC and PostgreSQL. Track your spending, visualize your expenses with beautiful charts, and gain insights into your financial habits.
-
-![Expense Tracker](https://via.placeholder.com/800x400/0d6efd/ffffff?text=Expense+Tracker+Dashboard)
+A full-featured, multi-user personal finance management application built with ASP.NET Core 8.0 MVC and PostgreSQL. Track expenses and income, set budgets and savings goals, manage recurring transactions, and gain deep insights into your financial habits through a rich analytics dashboard.
 
 ## Features
 
-### 💰 Expense Management
-- **Full CRUD Operations**: Create, Read, Update, and Delete expenses
-- **Rich Data Model**: Track title, description, amount, category, and date for each expense
-- **10 Category Types**: Food, Transportation, Housing, Utilities, Entertainment, Healthcare, Shopping, Education, Travel, and Other
-- **Form Validation**: Client and server-side validation to ensure data integrity
+### 💰 Expense & Income Management
+- **Full CRUD Operations**: Create, Read, Update, and Delete both expenses and income records
+- **10 Expense Categories**: Food, Transportation, Housing, Utilities, Entertainment, Healthcare, Shopping, Education, Travel, and Other
+- **8 Income Sources**: Salary, Freelance, Investment, Rental, Business, Gift, Bonus, and Other
+- **File Attachments**: Attach receipts or documents (JPEG, PNG, GIF, PDF — up to 5 MB) to any expense
+- **Tags**: Create custom color-coded tags and apply them to expenses or income for fine-grained categorization
+- **Multi-Currency Support**: Record transactions in USD, EUR, GBP, INR, JPY, CAD, or AUD with configurable exchange rates
+- **Form Validation**: Client-side and server-side validation to ensure data integrity
 
 ### 📊 Dashboard & Analytics
-- **Summary Cards**: View total expenses, monthly expenses, average expense, and transaction count at a glance
+- **Summary Cards**: Total expenses, monthly expenses, average expense, and transaction count at a glance
 - **Pie Chart**: Visual breakdown of expenses by category
 - **Bar Chart**: Monthly spending trends for the last 6 months
 - **Recent Transactions**: Quick view of your latest 5 expenses
+- **Reports**: Detailed analytics view with customizable date ranges and category breakdowns
 
-### 🔍 Filtering & Search
-- **Date Range Filtering**: Filter expenses between specific dates
-- **Category Filtering**: View expenses by category
-- **Text Search**: Search expenses by title or description
-- **Combined Filters**: Use multiple filters simultaneously
-- **Pagination**: Navigate through large sets of expenses easily
+### 🔁 Recurring Transactions
+- Automate creation of expenses or income on **Daily**, **Weekly**, **Monthly**, or **Yearly** schedules
+- A background hosted service processes due recurring transactions automatically
+- Track `NextRunAt`, `LastRunAt`, and optional `EndDate` per transaction
+
+### 🎯 Budgets & Goals
+- **Budgets**: Set monthly spending limits overall or per category; get alerts when a budget is exceeded
+- **Financial Goals**: Define savings targets with a target date and track progress (current amount vs. target)
+
+### 🔔 Notifications
+- Receive in-app notifications for key events:
+  - Budget exceeded
+  - Goal achieved
+  - Recurring transaction processed
+  - Upcoming bill reminders
+- Mark notifications as read with timestamps
+
+### 🔍 Filtering, Search & Pagination
+- Filter expenses or income by date range, category/source, and free-text search (title or description)
+- Combine multiple filters simultaneously
+- Paginate through large data sets easily
+
+### 👤 Authentication & Authorisation
+- **User registration and login** powered by ASP.NET Core Identity
+- **Role-based access**: standard users see only their own data; admins manage all data
+- Cookie-based authentication (7-day sliding expiry)
+- JWT Bearer token authentication available for the REST API
+
+### 🛠 Admin Panel
+- Admin dashboard with site-wide statistics
+- Manage all users, expenses, income entries, and supported currencies
+
+### 🌐 REST API
+- Full RESTful JSON API for Expenses, Income, Budgets, Goals, Tags, and Auth
+- Secured with JWT Bearer tokens
+- Swagger/OpenAPI UI available at `/swagger` in Development
 
 ### 🎨 Modern UI/UX
 - **Bootstrap 5**: Responsive, mobile-first design
-- **Font Awesome Icons**: Beautiful icons throughout the interface
-- **Custom CSS**: Polished, professional color scheme and styling
+- **Font Awesome 6**: Icons throughout the interface
+- **Chart.js 4**: Interactive charts on the dashboard
+- **Toast Notifications**: Real-time success and error feedback
 - **Smooth Animations**: Hover effects, transitions, and fade-in animations
-- **Toast Notifications**: Success and error messages for user actions
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- Works seamlessly on desktop, tablet, and mobile devices
+
+---
 
 ## Tech Stack
 
-- **Backend**: ASP.NET Core 8.0 MVC
-- **Database**: PostgreSQL with Entity Framework Core
-- **ORM**: Entity Framework Core with Npgsql provider
-- **Frontend**: Razor Views, Bootstrap 5, HTML5, CSS3
-- **Charts**: Chart.js 4.4.0
-- **Icons**: Font Awesome 6.4.0
-- **Architecture**: Layered architecture (Controllers → Services → Repository/DbContext → Database)
+| Layer | Technology |
+|---|---|
+| Backend framework | ASP.NET Core 8.0 MVC |
+| Language | C# 12 (.NET 8) |
+| Database | PostgreSQL 12+ |
+| ORM | Entity Framework Core 8 (Npgsql provider) |
+| Authentication | ASP.NET Core Identity + JWT Bearer |
+| Frontend | Razor Views, Bootstrap 5, jQuery |
+| Charts | Chart.js 4.4 |
+| Icons | Font Awesome 6.4 |
+| API docs | Swagger / Swashbuckle 6.6 |
+| CSV export | CsvHelper 33 |
+| Background jobs | .NET hosted background service |
+
+---
 
 ## Prerequisites
 
-Before running this application, ensure you have the following installed:
-
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
-- [PostgreSQL](https://www.postgresql.org/download/) (version 12 or later recommended)
-- A code editor like [Visual Studio](https://visualstudio.microsoft.com/), [Visual Studio Code](https://code.visualstudio.com/), or [JetBrains Rider](https://www.jetbrains.com/rider/)
+- [PostgreSQL](https://www.postgresql.org/download/) 12 or later
+- A code editor such as [Visual Studio](https://visualstudio.microsoft.com/), [Visual Studio Code](https://code.visualstudio.com/), or [JetBrains Rider](https://www.jetbrains.com/rider/)
+
+---
 
 ## Getting Started
 
@@ -60,7 +102,7 @@ git clone https://github.com/Parth5522/Expense-Tracker.git
 cd Expense-Tracker/ExpenseTracker
 ```
 
-### 2. Configure PostgreSQL Connection
+### 2. Configure the Database Connection
 
 Open `appsettings.json` and update the connection string with your PostgreSQL credentials:
 
@@ -72,258 +114,365 @@ Open `appsettings.json` and update the connection string with your PostgreSQL cr
 }
 ```
 
-Replace:
-- `localhost` with your PostgreSQL host (if different)
-- `5432` with your PostgreSQL port (if different)
-- `ExpenseTrackerDb` with your desired database name
-- `postgres` with your PostgreSQL username
-- `your_password_here` with your PostgreSQL password
+| Placeholder | Description |
+|---|---|
+| `localhost` | PostgreSQL host |
+| `5432` | PostgreSQL port |
+| `ExpenseTrackerDb` | Database name to create |
+| `postgres` | PostgreSQL username |
+| `your_password_here` | PostgreSQL password |
 
-### 3. Install Dependencies
+### 3. Configure JWT (for API access)
+
+In `appsettings.json`, set a strong secret key (minimum 32 characters) for JWT token signing:
+
+```json
+{
+  "Jwt": {
+    "Key": "YourSuperSecretKeyAtLeast32CharsLong!",
+    "Issuer": "ExpenseTracker",
+    "Audience": "ExpenseTrackerUsers"
+  }
+}
+```
+
+> ⚠️ **Never commit a real production secret to source control.** Use environment variables or a secrets manager in production.
+
+### 4. Restore Dependencies
 
 ```bash
 dotnet restore
 ```
 
-### 4. Apply Database Migrations
+### 5. Apply Database Migrations
 
-Create and apply the initial migration to set up your database:
+The application runs migrations automatically on startup. Alternatively, apply them manually:
 
 ```bash
-# Create migration
-dotnet ef migrations add InitialCreate
-
-# Apply migration to database
 dotnet ef database update
 ```
 
-This will create the `ExpenseTrackerDb` database with the `Expenses` table and seed it with 20 sample expenses for demonstration.
+This creates the database and all tables. In Development mode, seed data is loaded automatically.
 
-### 5. Run the Application
+### 6. Run the Application
 
 ```bash
 dotnet run
 ```
 
-Or, if using Visual Studio, press `F5` or click the "Run" button.
+Or press **F5** in Visual Studio / Rider.
 
-The application will start and be available at:
-- HTTPS: `https://localhost:5001`
+The application is available at:
 - HTTP: `http://localhost:5000`
+- HTTPS: `https://localhost:5001`
 
-Open your browser and navigate to one of these URLs to start using the Expense Tracker!
+Register a new account to get started. The first admin account can be set up directly in the database or via seeded data.
+
+---
 
 ## Project Structure
 
 ```
 ExpenseTracker/
 ├── Controllers/
-│   ├── HomeController.cs          # Dashboard and home page
-│   └── ExpensesController.cs      # CRUD operations for expenses
+│   ├── AccountController.cs          # Registration, login, profile, password
+│   ├── AdminController.cs            # Admin dashboard & user management
+│   ├── BudgetsController.cs          # Budget CRUD
+│   ├── ExpensesController.cs         # Expense CRUD with filters
+│   ├── GoalsController.cs            # Financial goals CRUD
+│   ├── HomeController.cs             # Dashboard & analytics
+│   ├── IncomeController.cs           # Income CRUD
+│   ├── NotificationsController.cs    # Notification list & mark-read
+│   ├── RecurringController.cs        # Recurring transaction CRUD
+│   ├── ReportsController.cs          # Reports & analytics
+│   ├── TagsController.cs             # Tag management
+│   └── Api/                          # RESTful JSON API controllers
+│       ├── AuthApiController.cs
+│       ├── BudgetsApiController.cs
+│       ├── ExpensesApiController.cs
+│       ├── GoalsApiController.cs
+│       ├── IncomeApiController.cs
+│       └── TagsApiController.cs
+│
 ├── Models/
-│   ├── Expense.cs                 # Expense entity model
-│   ├── ExpenseCategory.cs         # Category enumeration
-│   └── ErrorViewModel.cs          # Error handling model
+│   ├── ApplicationUser.cs            # Extended Identity user
+│   ├── Attachment.cs                 # File attachment entity
+│   ├── Budget.cs                     # Budget entity
+│   ├── Currency.cs                   # Supported currencies & rates
+│   ├── Expense.cs                    # Expense entity
+│   ├── ExpenseCategory.cs            # Category enum (10 values)
+│   ├── Goal.cs                       # Savings goal entity
+│   ├── Income.cs                     # Income entity
+│   ├── Notification.cs               # Notification entity
+│   ├── RecurringTransaction.cs       # Recurring transaction entity
+│   └── Tag.cs                        # Tag entity + junction tables
+│
 ├── ViewModels/
-│   ├── DashboardViewModel.cs      # Dashboard data aggregation
-│   └── ExpenseFilterViewModel.cs  # Filtering and pagination
-├── Data/
-│   └── ExpenseDbContext.cs        # EF Core DbContext with seed data
+│   ├── DashboardViewModel.cs
+│   ├── ExpenseFilterViewModel.cs
+│   ├── ReportViewModel.cs
+│   ├── LoginViewModel.cs
+│   ├── RegisterViewModel.cs
+│   ├── ChangePasswordViewModel.cs
+│   ├── ForgotPasswordViewModel.cs
+│   └── ResetPasswordViewModel.cs
+│
 ├── Services/
-│   ├── IExpenseService.cs         # Service interface
-│   └── ExpenseService.cs          # Business logic implementation
+│   ├── IExpenseService.cs / ExpenseService.cs
+│   ├── IIncomeService.cs / IncomeService.cs
+│   ├── IBudgetService.cs / BudgetService.cs
+│   ├── IGoalService.cs / GoalService.cs
+│   ├── ITagService.cs / TagService.cs
+│   ├── INotificationService.cs / NotificationService.cs
+│   ├── IAttachmentService.cs / AttachmentService.cs
+│   ├── IRecurringTransactionService.cs / RecurringTransactionService.cs
+│   ├── IReportService.cs / ReportService.cs
+│   ├── ICurrencyService.cs / CurrencyService.cs
+│   ├── IJwtService.cs / JwtService.cs
+│   ├── RecurringTransactionHostedService.cs  # Background scheduler
+│   └── CustomUserClaimsPrincipalFactory.cs
+│
+├── Data/
+│   ├── ApplicationDbContext.cs       # EF Core DbContext
+│   └── SeedData.cs                   # Demo data seeder
+│
+├── Migrations/                       # EF Core migration files
+│
 ├── Views/
-│   ├── Home/
-│   │   └── Index.cshtml           # Dashboard with charts
-│   ├── Expenses/
-│   │   ├── Index.cshtml           # List view with filters
-│   │   ├── Create.cshtml          # Create expense form
-│   │   ├── Edit.cshtml            # Edit expense form
-│   │   ├── Details.cshtml         # Expense details view
-│   │   └── Delete.cshtml          # Delete confirmation
-│   └── Shared/
-│       ├── _Layout.cshtml         # Main layout with navigation
-│       └── _ValidationScriptsPartial.cshtml
+│   ├── Home/                         # Dashboard
+│   ├── Expenses/                     # Expense CRUD views
+│   ├── Income/                       # Income CRUD views
+│   ├── Budgets/                      # Budget CRUD views
+│   ├── Goals/                        # Goals CRUD views
+│   ├── Recurring/                    # Recurring transaction views
+│   ├── Tags/                         # Tag management views
+│   ├── Reports/                      # Analytics & reports
+│   ├── Notifications/                # Notification list
+│   ├── Account/                      # Auth views (login, register, profile…)
+│   ├── Admin/                        # Admin panel views
+│   └── Shared/                       # Layout & partials
+│
 ├── wwwroot/
-│   ├── css/
-│   │   └── site.css               # Custom styles
-│   └── js/
-│       └── site.js                # Custom JavaScript
-├── Program.cs                     # Application entry point
-├── appsettings.json              # Configuration settings
-└── README.md                      # This file
+│   ├── css/site.css                  # Custom styles
+│   └── js/site.js                    # Custom JavaScript
+│
+├── Program.cs                        # Entry point & DI configuration
+├── appsettings.json                  # Production configuration
+└── appsettings.Development.json      # Development overrides
 ```
+
+---
 
 ## Database Schema
 
-### Expenses Table
+### Core Tables
 
-| Column      | Type          | Description                          |
-|-------------|---------------|--------------------------------------|
-| Id          | INT (PK)      | Primary key                          |
-| Title       | VARCHAR(200)  | Expense title (required)             |
-| Description | VARCHAR(1000) | Optional description                 |
-| Amount      | DECIMAL(18,2) | Expense amount (required)            |
-| Category    | INT (ENUM)    | Category (0-9, required)             |
-| Date        | TIMESTAMP     | Expense date (required)              |
-| CreatedAt   | TIMESTAMP     | Record creation timestamp (required) |
+| Table | Key Columns |
+|---|---|
+| **AspNetUsers** | Id, UserName, Email, DisplayName, BaseCurrency, CreatedAt |
+| **Expenses** | Id, UserId (FK), Title, Description, Amount, Category, Date, CurrencyId, ExchangeRate, CreatedAt |
+| **Incomes** | Id, UserId (FK), Title, Description, Amount, Source, Date, CurrencyId, ExchangeRate, CreatedAt |
+| **Budgets** | Id, UserId (FK), Month, Year, Category (nullable), Amount |
+| **Goals** | Id, UserId (FK), Title, TargetAmount, CurrentAmount, TargetDate, CreatedAt |
+| **RecurringTransactions** | Id, UserId (FK), Title, Amount, Type, Frequency, NextRunAt, LastRunAt, EndDate |
+| **Tags** | Id, UserId (FK), Name, Color |
+| **ExpenseTags** | ExpenseId (FK), TagId (FK) — junction table |
+| **IncomeTags** | IncomeId (FK), TagId (FK) — junction table |
+| **Attachments** | Id, ExpenseId (FK), FileName, FilePath, ContentType, FileSize, UploadedAt |
+| **Notifications** | Id, UserId (FK), Type, Message, IsRead, CreatedAt, ReadAt |
+| **Currencies** | Id, Code, Name, Symbol, ExchangeRateToUsd |
+
+---
 
 ## Usage Guide
 
-### Adding a New Expense
-1. Click "Add Expense" button in the navigation bar or dashboard
-2. Fill in the expense details (title, amount, category, and date are required)
-3. Click "Create Expense" to save
+### Expenses & Income
+1. Click **Add Expense** or **Add Income** in the navigation bar
+2. Fill in the required fields (title, amount, category/source, date)
+3. Optionally add a description, tags, currency, and file attachment
+4. Click **Save** to create the record
 
-### Viewing Expenses
-- Navigate to "Expenses" in the menu to see all expenses
-- Use filters to narrow down results by date, category, or search term
-- Click on any expense row for more details
+### Budgets
+1. Go to **Budgets** → **Add Budget**
+2. Select the month/year and optionally a specific category
+3. Enter the spending limit and save
+4. The dashboard and budget list show how much of each budget has been used
 
-### Editing an Expense
-1. Go to the expense list or dashboard
-2. Click the edit (pencil) icon for the expense you want to modify
-3. Update the details and click "Update Expense"
+### Financial Goals
+1. Go to **Goals** → **Add Goal**
+2. Set a title, target amount, and target date
+3. Update **Current Amount** as you progress toward your goal
+4. A progress bar shows how close you are
 
-### Deleting an Expense
-1. Navigate to the expense you want to delete
-2. Click the delete (trash) icon
-3. Confirm the deletion on the confirmation page
+### Recurring Transactions
+1. Go to **Recurring** → **Add Recurring**
+2. Choose type (Expense or Income), frequency, start date, and optional end date
+3. The background service creates the corresponding records automatically when they fall due
 
-### Dashboard Analytics
-- View your spending summary at a glance
-- Analyze spending patterns with the category pie chart
-- Track monthly trends with the bar chart
-- Review recent transactions
+### Tags
+1. Go to **Tags** → **Add Tag** to create custom tags with a color
+2. Assign tags to expenses or income from the create/edit forms
+3. Use tag filters on the Expenses or Income list pages
+
+### Reports
+- Navigate to **Reports** for a detailed breakdown by date range and category
+- Export data as CSV if needed
+
+### Admin Panel
+- Accessible to users with the **Admin** role at `/Admin`
+- View all users, all expenses, all income records, and manage supported currencies
+
+### REST API
+- API endpoints are available under `/api/`
+- Obtain a JWT token via `POST /api/auth/login`
+- Include the token in the `Authorization: Bearer <token>` header for subsequent requests
+- Interactive API documentation is available at `/swagger` when running in Development mode
+
+---
 
 ## Development
 
-### Adding New Features
+### Architecture
 
 The application follows a layered architecture:
 
-1. **Models**: Define your data entities in `Models/`
-2. **Services**: Add business logic in `Services/`
-3. **Controllers**: Handle HTTP requests in `Controllers/`
-4. **Views**: Create UI in `Views/`
-
-### Running Migrations
-
-After making changes to models:
-
-```bash
-# Add a new migration
-dotnet ef migrations add MigrationName
-
-# Update the database
-dotnet ef database update
-
-# Remove last migration (if not applied)
-dotnet ef migrations remove
+```
+HTTP Request → Controller → Service → DbContext → PostgreSQL
 ```
 
-### Entity Framework Core Commands
+1. **Controllers** — handle HTTP requests, validate input, call services
+2. **Services** — contain business logic, interact with `ApplicationDbContext`
+3. **Models** — EF Core entities mapped to database tables
+4. **ViewModels** — data shapes for Razor views
+5. **Background Service** — `RecurringTransactionHostedService` polls for due recurring transactions
+
+### Entity Framework Migrations
 
 ```bash
-# List migrations
+# Add a new migration after changing models
+dotnet ef migrations add MigrationName
+
+# Apply pending migrations
+dotnet ef database update
+
+# Revert last unapplied migration
+dotnet ef migrations remove
+
+# List all migrations
 dotnet ef migrations list
 
-# Script migration to SQL
+# Generate SQL script
 dotnet ef migrations script
 
-# Drop database
+# Drop the database (use with caution)
 dotnet ef database drop
 ```
 
-## Configuration
+### Environment-Specific Configuration
 
-### Connection String Options
+| File | Purpose |
+|---|---|
+| `appsettings.json` | Shared / production defaults |
+| `appsettings.Development.json` | Development overrides (enables Swagger, seed data) |
+| `appsettings.Production.json` | Create this file to override secrets in production |
 
-The PostgreSQL connection string supports various options:
+---
+
+## Configuration Reference
+
+### Connection String
 
 ```
 Host=localhost;Port=5432;Database=ExpenseTrackerDb;Username=postgres;Password=your_password;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
 ```
 
-Common options:
-- `Host`: PostgreSQL server address
-- `Port`: PostgreSQL server port (default: 5432)
-- `Database`: Database name
-- `Username`: PostgreSQL username
-- `Password`: PostgreSQL password
-- `Pooling`: Enable connection pooling (recommended: true)
-- `SSL Mode`: SSL connection mode (Disable, Require, Prefer)
-- `Timeout`: Connection timeout in seconds
+### JWT Settings
 
-### Environment-Specific Settings
+```json
+{
+  "Jwt": {
+    "Key": "<32+ character secret key>",
+    "Issuer": "ExpenseTracker",
+    "Audience": "ExpenseTrackerUsers"
+  }
+}
+```
 
-For different environments, create:
-- `appsettings.Development.json` for development
-- `appsettings.Production.json` for production
+### File Upload Settings
+
+```json
+{
+  "FileUpload": {
+    "MaxSizeBytes": 5242880,
+    "AllowedTypes": "image/jpeg,image/png,image/gif,application/pdf"
+  }
+}
+```
+
+---
 
 ## Troubleshooting
 
 ### Database Connection Issues
 
-If you encounter "could not connect to server" errors:
+```bash
+# Check PostgreSQL is running (Linux)
+systemctl status postgresql
 
-1. Ensure PostgreSQL is running: `systemctl status postgresql` (Linux) or check Services (Windows)
-2. Verify connection string credentials
-3. Check PostgreSQL is listening on the correct port
-4. Ensure firewall allows connections to PostgreSQL
+# Check PostgreSQL is running (Windows)
+# Open Services and look for "postgresql-xx"
+```
+
+1. Verify the connection string credentials in `appsettings.json`
+2. Confirm PostgreSQL is listening on the configured port
+3. Check firewall rules allow the connection
 
 ### Migration Issues
 
-If migrations fail:
-
-1. Drop the database: `dotnet ef database drop`
-2. Delete the `Migrations` folder
-3. Create a new migration: `dotnet ef migrations add InitialCreate`
-4. Apply migration: `dotnet ef database update`
+```bash
+# Reset and re-apply migrations
+dotnet ef database drop
+dotnet ef database update
+```
 
 ### Port Already in Use
 
-If the default port is in use:
-
 ```bash
-# Run on a different port
 dotnet run --urls="https://localhost:5501;http://localhost:5500"
 ```
 
+---
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit your changes: `git commit -m 'Add AmazingFeature'`
+4. Push the branch: `git push origin feature/AmazingFeature`
 5. Open a Pull Request
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Acknowledgments
 
-- Built with [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)
-- UI powered by [Bootstrap 5](https://getbootstrap.com/)
-- Charts by [Chart.js](https://www.chartjs.org/)
-- Icons from [Font Awesome](https://fontawesome.com/)
-- Database by [PostgreSQL](https://www.postgresql.org/)
+- [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet) — web framework
+- [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) — ORM
+- [PostgreSQL](https://www.postgresql.org/) — database
+- [Bootstrap 5](https://getbootstrap.com/) — UI framework
+- [Chart.js](https://www.chartjs.org/) — charts
+- [Font Awesome](https://fontawesome.com/) — icons
+- [Swashbuckle / Swagger](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) — API documentation
+- [CsvHelper](https://joshclose.github.io/CsvHelper/) — CSV export
 
-## Screenshots
-
-*Add your screenshots here after deployment*
-
-### Dashboard
-![Dashboard](https://via.placeholder.com/800x500/0d6efd/ffffff?text=Dashboard+View)
-
-### Expense List
-![Expense List](https://via.placeholder.com/800x500/198754/ffffff?text=Expense+List)
-
-### Add Expense
-![Add Expense](https://via.placeholder.com/800x500/ffc107/ffffff?text=Add+Expense+Form)
+---
 
 ## Contact
 
