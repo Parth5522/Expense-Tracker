@@ -22,7 +22,10 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
     {
-        if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+        if (User.Identity?.IsAuthenticated == true)
+            return User.IsInRole("Admin")
+                ? RedirectToAction("Index", "Admin")
+                : RedirectToAction("Index", "Home");
         ViewBag.ReturnUrl = returnUrl;
         return View();
     }
@@ -53,7 +56,10 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Register()
     {
-        if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+        if (User.Identity?.IsAuthenticated == true)
+            return User.IsInRole("Admin")
+                ? RedirectToAction("Index", "Admin")
+                : RedirectToAction("Index", "Home");
         return View();
     }
 
