@@ -7,6 +7,7 @@ using System.Security.Claims;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class IncomeController : Controller
 {
     private readonly IIncomeService _incomeService;
@@ -78,16 +79,11 @@ public class IncomeController : Controller
         if (existing == null || existing.UserId != GetUserId()) return NotFound();
         if (ModelState.IsValid)
         {
-            existing.Title = income.Title;
-            existing.Amount = income.Amount;
-            existing.Source = income.Source;
-            existing.Date = DateTime.SpecifyKind(income.Date, DateTimeKind.Utc);
-            existing.Currency = income.Currency;
-            existing.ExchangeRate = income.ExchangeRate;
-            existing.Description = income.Description;
-            existing.AmountInBaseCurrency = existing.Amount * existing.ExchangeRate;
-            existing.UpdatedAt = DateTime.UtcNow;
-            await _incomeService.UpdateIncomeAsync(existing);
+            income.UserId = GetUserId();
+            income.Date = DateTime.SpecifyKind(income.Date, DateTimeKind.Utc);
+            income.AmountInBaseCurrency = income.Amount * income.ExchangeRate;
+            income.UpdatedAt = DateTime.UtcNow;
+            await _incomeService.UpdateIncomeAsync(income);
             TempData["Success"] = "Income updated successfully.";
             return RedirectToAction(nameof(Index));
         }

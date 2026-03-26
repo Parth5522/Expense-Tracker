@@ -7,6 +7,7 @@ using System.Security.Claims;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class TagsController : Controller
 {
     private readonly ITagService _tagService;

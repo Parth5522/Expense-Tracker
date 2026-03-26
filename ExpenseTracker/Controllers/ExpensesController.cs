@@ -8,6 +8,7 @@ using System.Security.Claims;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class ExpensesController : Controller
 {
     private readonly IExpenseService _expenseService;

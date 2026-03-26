@@ -5,6 +5,7 @@ using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class HomeController : Controller
 {
     private readonly IExpenseService _expenseService;

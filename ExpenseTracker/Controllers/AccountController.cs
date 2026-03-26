@@ -8,6 +8,7 @@ using System.Text;
 
 namespace ExpenseTracker.Controllers;
 
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;

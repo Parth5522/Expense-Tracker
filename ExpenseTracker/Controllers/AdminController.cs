@@ -9,6 +9,7 @@ using ExpenseTracker.Data;
 namespace ExpenseTracker.Controllers;
 
 [Authorize(Roles = "Admin")]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class AdminController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
