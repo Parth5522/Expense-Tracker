@@ -28,6 +28,9 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Index()
     {
+        if (User.IsInRole("Admin"))
+            return RedirectToAction("Index", "Admin");
+
         var userId = GetUserId();
         var dashboard = await _expenseService.GetDashboardDataAsync(userId);
         dashboard.TotalIncome = await _incomeService.GetTotalIncomeAsync(userId);

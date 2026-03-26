@@ -23,7 +23,12 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
     {
-        if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("Index", "Admin");
+            return RedirectToAction("Index", "Home");
+        }
         ViewBag.ReturnUrl = returnUrl;
         return View();
     }
