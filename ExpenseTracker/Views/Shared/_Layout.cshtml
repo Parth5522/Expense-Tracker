@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Expense Tracker</title>
+    <title>@ViewData["Title"] - FinTrack</title>
+    <link rel="icon" type="image/svg+xml" href="~/images/fintrack-logo.svg" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -20,11 +21,11 @@
                     <i class="fas fa-bars"></i>
                 </button>
             }
-            <a class="navbar-brand" asp-area=""
+                <a class="navbar-brand" asp-area=""
                asp-controller="@(User.IsInRole("Admin") ? "Admin" : "Home")"
                asp-action="Index">
-                <span class="brand-icon-wrap"><i class="fas fa-wallet"></i></span>
-                <span>Expense Tracker</span>
+                <img src="~/images/fintrack-logo.svg" alt="FinTrack" height="28" width="28" class="me-2" style="vertical-align:middle;" />
+                <span>FinTrack</span>
             </a>
 
             @if (!SignInManager.IsSignedIn(User))
@@ -223,8 +224,8 @@
 
     <!-- ===== Footer ===== -->
     <footer class="footer">
-        <i class="fas fa-wallet me-1" style="color:#c7d2fe;"></i>
-        &copy; 2026 Expense Tracker &mdash; Track Your Spending Wisely
+        <img src="~/images/fintrack-logo.svg" alt="" aria-hidden="true" height="18" width="18" style="vertical-align:middle;margin-right:.35rem;" />
+        &copy; 2026 FinTrack &mdash; Track Your Finances Wisely
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
