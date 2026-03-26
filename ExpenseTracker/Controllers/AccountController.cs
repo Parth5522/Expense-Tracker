@@ -96,7 +96,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Landing", "Home");
+        return RedirectToAction("L");
     }
 
     [HttpGet]
