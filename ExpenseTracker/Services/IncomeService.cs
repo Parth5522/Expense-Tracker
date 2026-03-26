@@ -14,7 +14,7 @@ public class IncomeService : IIncomeService
         await _context.Incomes.Where(i => i.UserId == userId).OrderByDescending(i => i.Date).ToListAsync();
 
     public async Task<Income?> GetIncomeByIdAsync(int id) =>
-        await _context.Incomes.FindAsync(id);
+        await _context.Incomes.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 
     public async Task<Income> CreateIncomeAsync(Income income)
     {
