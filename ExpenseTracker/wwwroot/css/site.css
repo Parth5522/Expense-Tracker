@@ -1056,3 +1056,51 @@ dl.row dd {
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(165,180,252,.3); border-radius: 4px; }
+
+
+/* KPI Cards */
+.stat-card {
+    border-radius: 12px;
+    padding: 18px;
+    color: white;
+    font-weight: 500;
+}
+
+/* Income */
+.stat-card.income {
+    background: linear-gradient(135deg, #28a745, #5cd65c);
+}
+
+/* Expense */
+.stat-card.expense {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b);
+}
+
+/* Month */
+.stat-card.month {
+    background: linear-gradient(135deg, #ff9800, #ffc107);
+}
+
+/* Average */
+.stat-card.avg {
+    background: linear-gradient(135deg, #6f42c1, #a66cff);
+}
+
+/* Transaction */
+.stat-card.transaction {
+    background: linear-gradient(135deg, #007bff, #4da3ff);
+}
+
+.stat-icon {
+    font-size: 22px;
+    opacity: 0.9;
+}
+
+.stat-label {
+    font-size: 14px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+}

@@ -15,8 +15,9 @@
 
     <!-- KPI Cards -->
     <div class="row g-3 mb-4">
+
         <div class="col-sm-6 col-xl">
-            <div class="stat-card success">
+            <div class="stat-card income">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Income</div>
@@ -26,8 +27,9 @@
                 </div>
             </div>
         </div>
+
         <div class="col-sm-6 col-xl">
-            <div class="stat-card danger">
+            <div class="stat-card expense">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Expenses</div>
@@ -37,8 +39,9 @@
                 </div>
             </div>
         </div>
+
         <div class="col-sm-6 col-xl">
-            <div class="stat-card warning">
+            <div class="stat-card month">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">This Month</div>
@@ -48,8 +51,9 @@
                 </div>
             </div>
         </div>
+
         <div class="col-sm-6 col-xl">
-            <div class="stat-card warning">
+            <div class="stat-card avg">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Avg. Expense</div>
@@ -59,8 +63,9 @@
                 </div>
             </div>
         </div>
+
         <div class="col-sm-6 col-xl">
-            <div class="stat-card info">
+            <div class="stat-card transaction">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Transactions</div>
@@ -143,10 +148,12 @@
                                         <strong class="text-danger">@currencySymbol@expense.Amount.ToString("N2")</strong>
                                     </td>
                                     <td class="td-actions text-end">
-                                        <a asp-controller="Expenses" asp-action="Details" asp-route-id="@expense.Id" class="btn btn-sm btn-outline-info" title="Details">
+                                        <a asp-controller="Expenses" asp-action="Details" asp-route-id="@expense.Id"
+                                               class="btn btn-sm btn-outline-info" title="Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a asp-controller="Expenses" asp-action="Edit" asp-route-id="@expense.Id" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <a asp-controller="Expenses" asp-action="Edit" asp-route-id="@expense.Id"
+                                               class="btn btn-sm btn-outline-warning" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
@@ -175,7 +182,7 @@
     <script>
         var currencySymbol = '@Html.Raw(currencySymbol)';
         var categoryLabels = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Keys.Select(k => k.ToString())));
-        var categoryData   = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Values));
+        var categoryData = @Html.Raw(Json.Serialize(Model.ExpensesByCategory.Values));
 
         new Chart(document.getElementById('categoryChart').getContext('2d'), {
             type: 'pie',
@@ -184,8 +191,8 @@
                 datasets: [{
                     data: categoryData,
                     backgroundColor: [
-                        '#818cf8','#34d399','#fbbf24','#f87171','#60a5fa',
-                        '#a78bfa','#fb923c','#4ade80','#38bdf8','#f472b6'
+                        '#818cf8', '#34d399', '#fbbf24', '#f87171', '#60a5fa',
+                        '#a78bfa', '#fb923c', '#4ade80', '#38bdf8', '#f472b6'
                     ],
                     borderWidth: 2,
                     borderColor: '#fff',
@@ -200,7 +207,7 @@
                     tooltip: {
                         callbacks: {
                             label: function (c) {
-                                var total = c.dataset.data.reduce(function(a,b){ return a+b; }, 0);
+                                var total = c.dataset.data.reduce(function (a, b) { return a + b; }, 0);
                                 var pct = total > 0 ? ((c.parsed / total) * 100).toFixed(1) : '0.0';
                                 return (c.label || '') + ': ' + currencySymbol + c.parsed.toFixed(2) + ' (' + pct + '%)';
                             }
@@ -211,8 +218,8 @@
         });
 
         var dailyLabels = @Html.Raw(Json.Serialize(Model.CurrentMonthDaily.Keys.Select(k => "Day " + k)));
-        var dailyData   = @Html.Raw(Json.Serialize(Model.CurrentMonthDaily.Values));
-        var monthName    = '@DateTime.Now.ToString("MMMM yyyy")';
+        var dailyData = @Html.Raw(Json.Serialize(Model.CurrentMonthDaily.Values));
+        var monthName = '@DateTime.Now.ToString("MMMM yyyy")';
 
         new Chart(document.getElementById('trendsChart').getContext('2d'), {
             type: 'bar',
