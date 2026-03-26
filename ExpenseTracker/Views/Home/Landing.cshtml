@@ -1,0 +1,345 @@
+@{
+    ViewData["Title"] = "Welcome";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ===================== HERO ===================== -->
+<section class="lp-hero">
+    <div class="lp-hero-bg-shape lp-shape-1"></div>
+    <div class="lp-hero-bg-shape lp-shape-2"></div>
+    <div class="lp-hero-bg-shape lp-shape-3"></div>
+
+    <div class="container lp-hero-inner">
+        <div class="lp-hero-text">
+            <span class="lp-badge"><i class="fas fa-star me-1"></i>Smart Finance Management</span>
+            <h1 class="lp-hero-title">
+                Take Control of<br />
+                <span class="lp-gradient-text">Your Finances</span>
+            </h1>
+            <p class="lp-hero-sub">
+                Track expenses, manage budgets, and achieve your financial goals —
+                all in one beautifully simple dashboard. Start free today.
+            </p>
+            <div class="lp-hero-actions">
+                <a asp-controller="Account" asp-action="Register" class="btn lp-btn-primary">
+                    <i class="fas fa-rocket me-2"></i>Get Started Free
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn lp-btn-outline">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </a>
+            </div>
+            <div class="lp-hero-trust">
+                <span><i class="fas fa-check-circle text-success me-1"></i>No credit card required</span>
+                <span><i class="fas fa-lock text-success me-1"></i>Bank-level security</span>
+                <span><i class="fas fa-bolt text-success me-1"></i>Set up in 2 minutes</span>
+            </div>
+        </div>
+
+        <div class="lp-hero-visual">
+            <div class="lp-mockup-card">
+                <div class="lp-mockup-header">
+                    <span class="lp-dot red"></span>
+                    <span class="lp-dot yellow"></span>
+                    <span class="lp-dot green"></span>
+                    <span class="lp-mockup-title ms-2"><i class="fas fa-chart-line me-1"></i>Dashboard</span>
+                </div>
+                <div class="lp-stat-row">
+                    <div class="lp-stat-mini income">
+                        <div class="lp-stat-mini-label">Income</div>
+                        <div class="lp-stat-mini-val">$5,240</div>
+                        <div class="lp-stat-trend up"><i class="fas fa-arrow-up"></i> 12%</div>
+                    </div>
+                    <div class="lp-stat-mini expense">
+                        <div class="lp-stat-mini-label">Expenses</div>
+                        <div class="lp-stat-mini-val">$2,180</div>
+                        <div class="lp-stat-trend down"><i class="fas fa-arrow-down"></i> 5%</div>
+                    </div>
+                    <div class="lp-stat-mini savings">
+                        <div class="lp-stat-mini-label">Savings</div>
+                        <div class="lp-stat-mini-val">$3,060</div>
+                        <div class="lp-stat-trend up"><i class="fas fa-arrow-up"></i> 8%</div>
+                    </div>
+                </div>
+                <div class="lp-chart-preview">
+                    <div class="lp-bar" style="height:55%"></div>
+                    <div class="lp-bar" style="height:75%"></div>
+                    <div class="lp-bar" style="height:45%"></div>
+                    <div class="lp-bar" style="height:90%"></div>
+                    <div class="lp-bar" style="height:60%"></div>
+                    <div class="lp-bar" style="height:80%"></div>
+                    <div class="lp-bar active" style="height:70%"></div>
+                </div>
+                <div class="lp-tx-list">
+                    <div class="lp-tx-item">
+                        <span class="lp-tx-dot food"></span>
+                        <span class="lp-tx-name">Groceries</span>
+                        <span class="lp-tx-amt text-danger">-$84.50</span>
+                    </div>
+                    <div class="lp-tx-item">
+                        <span class="lp-tx-dot travel"></span>
+                        <span class="lp-tx-name">Transport</span>
+                        <span class="lp-tx-amt text-danger">-$32.00</span>
+                    </div>
+                    <div class="lp-tx-item">
+                        <span class="lp-tx-dot income"></span>
+                        <span class="lp-tx-name">Salary</span>
+                        <span class="lp-tx-amt text-success">+$3,500</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== STATS STRIP ===================== -->
+<section class="lp-stats-strip">
+    <div class="container">
+        <div class="lp-stats-grid">
+            <div class="lp-stat-item">
+                <div class="lp-stat-num">10K+</div>
+                <div class="lp-stat-lbl">Active Users</div>
+            </div>
+            <div class="lp-stat-item">
+                <div class="lp-stat-num">$2M+</div>
+                <div class="lp-stat-lbl">Expenses Tracked</div>
+            </div>
+            <div class="lp-stat-item">
+                <div class="lp-stat-num">50K+</div>
+                <div class="lp-stat-lbl">Transactions</div>
+            </div>
+            <div class="lp-stat-item">
+                <div class="lp-stat-num">4.9 ★</div>
+                <div class="lp-stat-lbl">User Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="lp-section lp-features" id="features">
+    <div class="container">
+        <div class="lp-section-head">
+            <span class="lp-badge">Features</span>
+            <h2 class="lp-section-title">Everything you need to manage your money</h2>
+            <p class="lp-section-sub">
+                From daily expense tracking to long-term financial planning — we've got you covered.
+            </p>
+        </div>
+        <div class="lp-features-grid">
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#818cf8;">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h3 class="lp-feature-title">Expense Tracking</h3>
+                <p class="lp-feature-desc">
+                    Log and categorize every expense in seconds. Filter, search, and review
+                    your full spending history with ease.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#34d399;">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h3 class="lp-feature-title">Income Management</h3>
+                <p class="lp-feature-desc">
+                    Record multiple income sources, view totals at a glance, and understand
+                    exactly where your money comes from.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#fbbf24;">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h3 class="lp-feature-title">Smart Budgets</h3>
+                <p class="lp-feature-desc">
+                    Set monthly budgets per category and get real-time progress bars so
+                    you always know how much headroom you have.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#f87171;">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3 class="lp-feature-title">Financial Goals</h3>
+                <p class="lp-feature-desc">
+                    Define savings goals — a holiday, emergency fund, or new laptop — and
+                    track your progress with visual goal meters.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#60a5fa;">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3 class="lp-feature-title">Recurring Transactions</h3>
+                <p class="lp-feature-desc">
+                    Automate recurring bills and subscriptions. Never miss a rent, utility,
+                    or subscription entry again.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#a78bfa;">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="lp-feature-title">Detailed Reports</h3>
+                <p class="lp-feature-desc">
+                    Beautiful charts and exportable reports reveal spending trends so you
+                    can make smarter financial decisions.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#fb923c;">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3 class="lp-feature-title">Smart Notifications</h3>
+                <p class="lp-feature-desc">
+                    Get alerted when you approach a budget limit, hit a goal milestone,
+                    or when a recurring payment is due.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#4ade80;">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3 class="lp-feature-title">Tags & Categories</h3>
+                <p class="lp-feature-desc">
+                    Organize transactions with custom tags and categories. Filter reports
+                    and lists to see exactly what matters.
+                </p>
+            </div>
+
+            <div class="lp-feature-card">
+                <div class="lp-feature-icon" style="--fi-color:#38bdf8;">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 class="lp-feature-title">Multi-Currency</h3>
+                <p class="lp-feature-desc">
+                    Track expenses in your local currency. Admins can manage a full list
+                    of supported currencies for global users.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="lp-section lp-how" id="how-it-works">
+    <div class="container">
+        <div class="lp-section-head">
+            <span class="lp-badge">How It Works</span>
+            <h2 class="lp-section-title">Up and running in three steps</h2>
+            <p class="lp-section-sub">No complicated setup — start tracking in minutes.</p>
+        </div>
+        <div class="lp-how-steps">
+            <div class="lp-step">
+                <div class="lp-step-num">1</div>
+                <div class="lp-step-icon"><i class="fas fa-user-plus"></i></div>
+                <h3 class="lp-step-title">Create Your Account</h3>
+                <p class="lp-step-desc">
+                    Sign up for free in under a minute. No credit card or complicated
+                    onboarding — just your email and a password.
+                </p>
+            </div>
+            <div class="lp-step-connector"></div>
+            <div class="lp-step">
+                <div class="lp-step-num">2</div>
+                <div class="lp-step-icon"><i class="fas fa-plus-circle"></i></div>
+                <h3 class="lp-step-title">Log Your Transactions</h3>
+                <p class="lp-step-desc">
+                    Add your income and expenses, set up budgets, and define your financial
+                    goals with our simple, intuitive forms.
+                </p>
+            </div>
+            <div class="lp-step-connector"></div>
+            <div class="lp-step">
+                <div class="lp-step-num">3</div>
+                <div class="lp-step-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3 class="lp-step-title">Gain Insights</h3>
+                <p class="lp-step-desc">
+                    Your personalised dashboard and detailed reports will show you exactly
+                    where your money goes — so you can save more.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="lp-section lp-testimonials">
+    <div class="container">
+        <div class="lp-section-head">
+            <span class="lp-badge">Testimonials</span>
+            <h2 class="lp-section-title">Loved by thousands of users</h2>
+        </div>
+        <div class="lp-testi-grid">
+            <div class="lp-testi-card">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-text">
+                    "I finally know where my money goes every month. The budget alerts
+                    alone have saved me hundreds of dollars."
+                </p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-avatar">SM</div>
+                    <div>
+                        <div class="lp-testi-name">Sarah M.</div>
+                        <div class="lp-testi-role">Freelance Designer</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-testi-card featured">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-text">
+                    "The recurring transactions feature is a game changer. I set up all
+                    my subscriptions once and never have to think about them again."
+                </p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-avatar">JL</div>
+                    <div>
+                        <div class="lp-testi-name">James L.</div>
+                        <div class="lp-testi-role">Software Engineer</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-testi-card">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-text">
+                    "Clean, fast, and incredibly useful. I reached my emergency-fund goal
+                    three months early thanks to the goals tracker."
+                </p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-avatar">AP</div>
+                    <div>
+                        <div class="lp-testi-name">Anika P.</div>
+                        <div class="lp-testi-role">Marketing Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== CTA BANNER ===================== -->
+<section class="lp-cta">
+    <div class="lp-cta-shape lp-cta-s1"></div>
+    <div class="lp-cta-shape lp-cta-s2"></div>
+    <div class="container lp-cta-inner">
+        <h2 class="lp-cta-title">Ready to take control of your finances?</h2>
+        <p class="lp-cta-sub">Join thousands of users who have already transformed their financial lives.</p>
+        <div class="lp-cta-actions">
+            <a asp-controller="Account" asp-action="Register" class="btn lp-btn-white">
+                <i class="fas fa-rocket me-2"></i>Start for Free
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn lp-btn-ghost">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </a>
+        </div>
+    </div>
+</section>

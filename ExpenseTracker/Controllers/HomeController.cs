@@ -25,9 +25,11 @@ public class HomeController : Controller
 
     private string GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-    [Authorize]
     public async Task<IActionResult> Index()
     {
+        if (!User.Identity?.IsAuthenticated ?? true)
+            return View("Landing");
+
         if (User.IsInRole("Admin"))
             return RedirectToAction("Index", "Admin");
 
