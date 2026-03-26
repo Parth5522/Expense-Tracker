@@ -20,7 +20,9 @@
                     <i class="fas fa-bars"></i>
                 </button>
             }
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <a class="navbar-brand" asp-area=""
+               asp-controller="@(User.IsInRole("Admin") ? "Admin" : "Home")"
+               asp-action="Index">
                 <span class="brand-icon-wrap"><i class="fas fa-wallet"></i></span>
                 <span>Expense Tracker</span>
             </a>
