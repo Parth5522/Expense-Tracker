@@ -15,8 +15,19 @@
 
     <!-- KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-sm-6">
-            <div class="stat-card">
+        <div class="col-sm-6 col-xl">
+            <div class="stat-card success">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Total Income</div>
+                        <div class="stat-value">@currencySymbol@Model.TotalIncome.ToString("N2")</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl">
+            <div class="stat-card danger">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Expenses</div>
@@ -26,8 +37,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
-            <div class="stat-card success">
+        <div class="col-sm-6 col-xl">
+            <div class="stat-card warning">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">This Month</div>
@@ -37,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
+        <div class="col-sm-6 col-xl">
             <div class="stat-card warning">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -48,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
+        <div class="col-sm-6 col-xl">
             <div class="stat-card info">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -129,7 +140,7 @@
                                         </span>
                                     </td>
                                     <td data-label="Amount" class="text-end">
-                                        <strong class="text-success">@currencySymbol@expense.Amount.ToString("N2")</strong>
+                                        <strong class="text-danger">@currencySymbol@expense.Amount.ToString("N2")</strong>
                                     </td>
                                     <td class="td-actions text-end">
                                         <a asp-controller="Expenses" asp-action="Details" asp-route-id="@expense.Id" class="btn btn-sm btn-outline-info" title="Details">
