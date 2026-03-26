@@ -34,7 +34,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarPublic">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item me-1">
+                            <button class="theme-toggle-btn" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Account" asp-action="Login">
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
@@ -55,6 +60,11 @@
                     ?? "Account";
                 var initials = string.Concat(displayName.Split(' ').Where(w => w.Length > 0).Take(2).Select(w => char.ToUpper(w[0])));
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-1">
+                        <button class="theme-toggle-btn" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
                     <li class="nav-item ms-2 dropdown">
                         <a class="nav-link user-chip dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration:none;">
                             <span class="user-avatar">@initials</span>

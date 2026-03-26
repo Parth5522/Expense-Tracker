@@ -1,6 +1,37 @@
 // Expense Tracker JavaScript
 
+// ── Dark / Light Mode ──
+(function () {
+    var savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Theme toggle ──
+    var themeBtn  = document.querySelector('.theme-toggle-btn');
+    var themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (themeIcon) {
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+
+    // Initialise icon to match persisted theme
+    var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    if (themeIcon) {
+        themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', function () {
+            var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+        });
+    }
 
     // ── Auto-dismiss alerts after 5 seconds ──
     document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
