@@ -1,6 +1,6 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<ExpenseTracker.Models.ApplicationUser> SignInManager
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" @(SignInManager.IsSignedIn(User) ? "data-auth-theme=\"true\"" : "")>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,11 +35,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarPublic">
                     <ul class="navbar-nav ms-auto align-items-center">
-                        <li class="nav-item me-1">
-                            <button class="theme-toggle-btn" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
-                                <i class="fas fa-moon"></i>
-                            </button>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Account" asp-action="Login">
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
